@@ -3,11 +3,11 @@
 # @author: mmaduar
 import numpy as np
 
-from genericcalib_class import ChannelEnergyCalib, EnergyFwhmCalib, EnergyEfficiencyCalib
-from specchn_class import SpecChn
-from speciec_class import SpecIec
-from cntarraylike_class import CntArrayLike
-from peaksparms_class import PeaksParms
+from src.genericcalib_class import ChannelEnergyCalib, EnergyFwhmCalib, EnergyEfficiencyCalib
+from src.specchn_class import SpecChn
+from src.speciec_class import SpecIec
+from src.cntarraylike_class import CntArrayLike
+from src.peaksparms_class import PeaksParms
 
 
 class SpecParms:

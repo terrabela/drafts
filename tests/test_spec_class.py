@@ -1,6 +1,6 @@
 from unittest import TestCase
 from src.spec_class import Spec
-from src.specparms_class import SpecParms
+# from src.specparms_class import SpecParms
 
 
 class TestSpec(TestCase):

@@ -8,7 +8,7 @@ Created on Wed Jun  2 16:06:14 2021
 from pathlib import (Path)
 import numpy as np
 
-from specparms_class import SpecParms
+from src.specparms_class import SpecParms
 # from spec_graphics_class import SpecGraphics
 
 
