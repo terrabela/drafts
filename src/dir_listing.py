@@ -5,6 +5,7 @@ Created on Wed Aug 31 15:10:14 2022
 @author: MFMáduar
 """
 
+# 2022-09-08: AQUI provavelmente apagarei este arquivo.
 from pathlib import Path
 
 # https://docs.python.org/3/library/pathlib.html#basic-use
