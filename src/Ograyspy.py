@@ -6,6 +6,7 @@ from pathlib import Path
 from spec_class import Spec
 
 class Ograyspy:
+
     files_list: list[str]
 
     def __init__(self, speed=0):
@@ -34,4 +35,8 @@ if __name__ == '__main__':
     print('Random spec index: ', my_ogra.a_spec_ind)
     a_spec_name: str = my_ogra.files_list[my_ogra.a_spec_ind]
     print('...and its name: ', a_spec_name)
-    a_spec = Spec(a_spec_name)
+    complete_spec_name = '../../../OwnDrive/Genie_Transfer' + '/' + a_spec_name
+    a_spec = Spec(complete_spec_name)
+    a_spec.total_analysis()
+    a_spec.plot_graphics()
+
