@@ -1,5 +1,8 @@
 # 2022-07-14 Rascunho criado
 
+
+
+
 figw1.add_trace(
     go.Scattergl(x=chans[:-ch_win],
                  y=var_rel,
@@ -26,15 +29,6 @@ figw1.add_trace(
 def plot_graphics(self, spec_parms, graph_nos):
     # graphic #1
 
-    chans_nzero = spec_parms.cnt_array_like.chans_nzero
-
-    chans_nzero = spec_parms.cnt_array_like.chans_nzero
-    counts_nzero = spec_parms.cnt_array_like.counts_nzero
-    unc_y_4plot = spec_parms.cnt_array_like.unc_y_4plot
-    chans = spec_parms.cnt_array_like.chans
-    xs_bl_out_reg = spec_parms.cnt_array_like.xs_bl_out_reg
-    ys_bl_out_reg = spec_parms.cnt_array_like.ys_bl_out_reg
-    eval_smoo_cts = spec_parms.cnt_array_like.eval_smoo_cts
     # Initialize figure
     figw1 = go.FigureWidget()
 
