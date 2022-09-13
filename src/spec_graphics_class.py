@@ -10,9 +10,15 @@ import plotly.graph_objects as go
 
 
 class SpecGraphics:
-
-    def __init__(self, ):
-        pass
+    def __init__(self, spec_parms, graph_nos):
+        chans_nzero = spec_parms.cnt_array_like.chans_nzero
+        chans_nzero = spec_parms.cnt_array_like.chans_nzero
+        counts_nzero = spec_parms.cnt_array_like.counts_nzero
+        unc_y_4plot = spec_parms.cnt_array_like.unc_y_4plot
+        chans = spec_parms.cnt_array_like.chans
+        xs_bl_out_reg = spec_parms.cnt_array_like.xs_bl_out_reg
+        ys_bl_out_reg = spec_parms.cnt_array_like.ys_bl_out_reg
+        eval_smoo_cts = spec_parms.cnt_array_like.eval_smoo_cts
 
     def plot_simple_scattergl(self, chans_nzero=None, counts_nzero=None, unc_y=None, f_name=None):
         # Initialize figure
