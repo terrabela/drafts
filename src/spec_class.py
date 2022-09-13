@@ -5,11 +5,11 @@ Created on Wed Jun  2 16:06:14 2021
 @author: mmaduar
 """
 
-from pathlib import (Path)
+from pathlib import Path
+
 import numpy as np
 
 from src.specparms_class import SpecParms
-# from spec_graphics_class import SpecGraphics
 
 
 class Spec:
@@ -47,5 +47,4 @@ class Spec:
 
     def plot_graphics(self, graph_nos):
         """Plot graphics (?)."""
-        # self.spec_graphics.plot_graphics(self.spec_parms, graph_nos)
-        pass
+        self.spec_graphics.plot_graphics(self.spec_parms, graph_nos)
