@@ -9,6 +9,7 @@ from pathlib import Path
 
 import numpy as np
 
+from src.spec_graphics_class import SpecGraphics
 from src.specparms_class import SpecParms
 
 
@@ -45,6 +46,7 @@ class Spec:
         """Analyze thoroughly a spectrum."""
         self.spec_parms.total_analysis(k_sep_pk, smoo, widths_range)
 
-    def plot_graphics(self, graph_nos):
+    def plot_graphics(self):
         """Plot graphics (?)."""
-        self.spec_graphics.plot_graphics(self.spec_parms, graph_nos)
+        self.spec_graphics = SpecGraphics(self.spec_parms)
+        self.spec_graphics.plot_simple_scattergl()
