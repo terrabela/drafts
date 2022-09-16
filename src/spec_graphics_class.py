@@ -15,6 +15,8 @@ class SpecGraphics:
         self.counts_nzero = spec_parms.cnt_array_like.counts_nzero
         self.unc_y_4plot = spec_parms.cnt_array_like.unc_y_4plot
         self.chans = spec_parms.cnt_array_like.chans
+        self.counts = spec_parms.cnt_array_like.y0s
+        self.nzero = spec_parms.cnt_array_like.nzero
         self.xs_bl_out_reg = spec_parms.cnt_array_like.xs_bl_out_reg
         self.ys_bl_out_reg = spec_parms.cnt_array_like.ys_bl_out_reg
         self.eval_smoo_cts = spec_parms.cnt_array_like.eval_smoo_cts
@@ -23,12 +25,13 @@ class SpecGraphics:
         self.ys_all_mplets = spec_parms.cnt_array_like.ys_all_mplets
         self.ys_all_steps = spec_parms.cnt_array_like.ys_all_steps
         self.final_baseline = spec_parms.cnt_array_like.final_baseline
-        # self.xs_fwb_lines = spec_parms.cnt_array_like.
+        self.xs_fwb_lines = spec_parms.peaks_parms.xs_fwb_lines
+        self.ys_fwb_lines = spec_parms.peaks_parms.ys_fwb_lines
 
-        # counts = self.cnt_array_like.y0s
-        # nzero = self.cnt_array_like.nzero
-        # self.peaks = spec_parms.peaks_parms.peaks
-        # self.pk_hei = spec_parms.peaks_parms.pk_hei
+        self.peaks_gro = spec_parms.peaks_parms.peaks_gro
+        self.pk_hei_gro = spec_parms.peaks_parms.pk_hei_gro
+        self.promns = spec_parms.peaks_parms.propts_gro['prominences']
+
         self.xs_fwhm_lines = spec_parms.peaks_parms.xs_fwhm_lines
         self.ys_fwhm_lines = spec_parms.peaks_parms.ys_fwhm_lines
 
@@ -76,15 +79,18 @@ class SpecGraphics:
                        name='FW at base',
                        line=dict(color='magenta', width=3.0)));
         fig_widths.add_trace(
-            go.Scatter(x=self.peaks,
-                       y=self.pk_hei,
+            go.Scatter(x=self.peaks_gro,
+                       y=self.pk_hei_gro,
                        name='peak_heights',
                        mode='markers',
                        line=dict(color='green', width=3.0)));
 
+        # 2022-09-16
+        # AQUI estou fazendo grande confusão com pk_hei, pk_gro, promns...
+        # Organizar essa puta zona.
         fig_widths.add_trace(
-            go.Scatter(x=self.peaks_parms.peaks,
-                       y=self.peaks_parms.pk_hei - self.peaks_parms.promns,
+            go.Scatter(x=self.peaks_gro,
+                       y=self.pk_hei_gro - self.promns,
                        name='pk_hei-promns',
                        mode='markers',
                        line=dict(color='cyan', width=3.0)));

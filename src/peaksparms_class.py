@@ -15,6 +15,7 @@ class PeaksParms:
     def __init__(self):
         self.peaks_gro = np.array([])
         self.peaks_net = np.array([])
+        self.pk_hei_gro = np.array([])
         self.propts_gro = {}
         self.propts_net = {}
 

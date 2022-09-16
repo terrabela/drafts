@@ -39,6 +39,10 @@ class CntArrayLike:
         self.spl_baseline = np.array([])
         self.eval_baseline = np.array([])
 
+        self.xs_bl_out_reg = np.array([])
+        self.ys_bl_out_reg = np.array([])
+        self.ws_bl_out_reg = np.array([])
+
         self.is_reg = np.zeros(n_ch, dtype=bool)
         self.is_net_reg = np.zeros(n_ch, dtype=bool)
 
