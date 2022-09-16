@@ -1,5 +1,7 @@
 from unittest import TestCase
 from src.spec_class import Spec
+
+
 # from src.specparms_class import SpecParms
 
 
@@ -7,8 +9,7 @@ class TestSpec(TestCase):
     def setUp(self):
         self.spec = Spec()
 
-
-#class TestSpec(TestCase):
+# class TestSpec(TestCase):
 #    def test_curr_h_win(self):
 #        self.fail()#
 #

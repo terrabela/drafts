@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src.Ograyspy  import Ograyspy
+from src.Ograyspy import Ograyspy
 
 
 class TestOgrayspy(TestCase):

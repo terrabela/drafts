@@ -8,6 +8,7 @@ Created on Fri Nov  5 12:11:50 2021
 import numpy as np
 from scipy.signal import find_peaks
 
+
 class PeaksParms:
     """Peaks set parameters (heights, widths etc)."""
 
@@ -44,10 +45,10 @@ class PeaksParms:
 
         self.fwhm_ctrs = np.array([])
 
-#    def initial_peaks_search(self, n_ch, cts_to_search, peaks_to_set, propts_to_set,
-#                             peak_sd_fact=3.0, widths_range=(None, None),
-#                             areas_calc='under_fwhm',
-#                             set_plateaux=False):
+    #    def initial_peaks_search(self, n_ch, cts_to_search, peaks_to_set, propts_to_set,
+    #                             peak_sd_fact=3.0, widths_range=(None, None),
+    #                             areas_calc='under_fwhm',
+    #                             set_plateaux=False):
     def peaks_search(self, cts_to_search, gross=False, peak_sd_fact=3.0, widths_range=(None, None)):
         """Peaks search; use scipy.signal.find_peaks."""
         n_ch = cts_to_search.size
@@ -57,7 +58,7 @@ class PeaksParms:
             if widths_range == (None, None):
                 widths_range = (n_ch * 0.0003, n_ch * 0.01)
             self.widths_range_gro = widths_range
-            self.peaks_gro, self.propts_gro = find_peaks (
+            self.peaks_gro, self.propts_gro = find_peaks(
                 cts_to_search,
                 height=height,
                 threshold=(None, None),
@@ -68,10 +69,10 @@ class PeaksParms:
             self.fwhm_ch_ini = np.ceil(self.propts_gro['left_ips']).astype(int)
             self.fwhm_ch_fin = np.floor(self.propts_gro['right_ips']).astype(int)
         else:
-#            if widths_range == (None, None):
-#                widths_range = (n_ch * 0.0003, n_ch * 0.01)
+            #            if widths_range == (None, None):
+            #                widths_range = (n_ch * 0.0003, n_ch * 0.01)
             self.widths_range_net = widths_range
-            self.peaks_net, self.propts_net = find_peaks (
+            self.peaks_net, self.propts_net = find_peaks(
                 cts_to_search,
                 height=height,
                 threshold=(None, None),
@@ -82,21 +83,18 @@ class PeaksParms:
         #####################################
         # PAREI AQUI 24-Mar-2022
         #####################################
-        #self.net_fwhm_chans = [
+        # self.net_fwhm_chans = [
         #    np.array(range(_net_fw_ch_ini[i_pk], self.fwhm_ch_fin[i_pk]+1))
         #    for i_pk in range(n_pk) ]
 
-
-#        if areas_calc=='under_fwhm':
-#            # NET Centroids
-#            self.net_fwhm_ctrs = np.array([
-###                np.average(self.fwhm_chans[i_pk], weights=self.counts_net[i_pk])
-#                for i_pk in range(n_pk)
-#                ])
-            # Uncertainties in areas
- #           self.s_sum_net = np.sqrt(self.sum_gross + self.n_ch_fwhm**2 * self.plateaux)
-
-
+    #        if areas_calc=='under_fwhm':
+    #            # NET Centroids
+    #            self.net_fwhm_ctrs = np.array([
+    ###                np.average(self.fwhm_chans[i_pk], weights=self.counts_net[i_pk])
+    #                for i_pk in range(n_pk)
+    #                ])
+    # Uncertainties in areas
+    #           self.s_sum_net = np.sqrt(self.sum_gross + self.n_ch_fwhm**2 * self.plateaux)
 
     def redefine_widths_range(self):
         """Redefine widths range."""
@@ -133,18 +131,18 @@ class PeaksParms:
         fin_extd = np.round(self.peaks_gro + widths_extd).astype(int)
         if self.peaks_gro.any():
             for i_pk, ch_pk in enumerate(self.peaks_gro):
-                for i_ch in range(ini_extd[i_pk], fin_extd[i_pk]+1):
+                for i_ch in range(ini_extd[i_pk], fin_extd[i_pk] + 1):
                     if (i_ch >= 0) & (i_ch < n_ch):
                         is_reg[i_ch] = True
 
         comuta = np.zeros(n_ch)
         for i in range(1, n_ch):
-            comuta[i] = is_reg[i].astype(int)-is_reg[i-1].astype(int)
+            comuta[i] = is_reg[i].astype(int) - is_reg[i - 1].astype(int)
 
         # np.nonzero gera uma tupla, não sei por quê.
-        inis = np.nonzero(comuta>0)[0]
+        inis = np.nonzero(comuta > 0)[0]
         # fins = np.append(np.nonzero(comuta<0), n)
-        fins = np.nonzero(comuta<0)[0]
+        fins = np.nonzero(comuta < 0)[0]
 
         # Ajusta comprimento dos arrays. Têm de ser iguais.
         min_size = np.minimum(inis.size, fins.size)
@@ -165,18 +163,18 @@ class PeaksParms:
         fin_extd = np.round(self.peaks_net + widths_extd).astype(int)
         if self.peaks_net.any():
             for i_pk, ch_pk in enumerate(self.peaks_net):
-                for i_ch in range(ini_extd[i_pk], fin_extd[i_pk]+1):
+                for i_ch in range(ini_extd[i_pk], fin_extd[i_pk] + 1):
                     if (i_ch >= 0) & (i_ch < n_ch):
                         is_reg[i_ch] = True
 
         comuta = np.zeros(n_ch)
         for i in range(1, n_ch):
-            comuta[i] = is_reg[i].astype(int)-is_reg[i-1].astype(int)
+            comuta[i] = is_reg[i].astype(int) - is_reg[i - 1].astype(int)
 
         # np.nonzero gera uma tupla, não sei por quê.
-        inis = np.nonzero(comuta>0)[0]
+        inis = np.nonzero(comuta > 0)[0]
         # fins = np.append(np.nonzero(comuta<0), n)
-        fins = np.nonzero(comuta<0)[0]
+        fins = np.nonzero(comuta < 0)[0]
 
         # Ajusta comprimento dos arrays. Têm de ser iguais.
         min_size = np.minimum(inis.size, fins.size)

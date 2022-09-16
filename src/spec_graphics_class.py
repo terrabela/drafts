@@ -23,7 +23,7 @@ class SpecGraphics:
         self.ys_all_mplets = spec_parms.cnt_array_like.ys_all_mplets
         self.ys_all_steps = spec_parms.cnt_array_like.ys_all_steps
         self.final_baseline = spec_parms.cnt_array_like.final_baseline
-
+        # self.xs_fwb_lines = spec_parms.cnt_array_like.
 
         # counts = self.cnt_array_like.y0s
         # nzero = self.cnt_array_like.nzero
@@ -51,12 +51,12 @@ class SpecGraphics:
 
         figw1.add_trace(
             go.Scattergl(x=self.chans,
-                       y=self.eval_smoo_cts,
-                       name='Smoothed',
-                       line=dict(color='navy', width=0.4)))
+                         y=self.eval_smoo_cts,
+                         name='Smoothed',
+                         line=dict(color='navy', width=0.4)))
 
         # Set title and scale type
-        figw1.update_layout(title_text='Fig 1: ') #  + f_name)
+        figw1.update_layout(title_text='Fig 1: ')  # + f_name)
         figw1.update_yaxes(type="log");
 
         figw1.write_html('figw1.html', auto_open=True)
@@ -71,13 +71,13 @@ class SpecGraphics:
                        name='FWHMs',
                        line=dict(color='blue', width=3.0)));
         fig_widths.add_trace(
-            go.Scatter(x=self.peaks_parms.xs_fwb_lines,
-                       y=self.peaks_parms.ys_fwb_lines,
+            go.Scatter(x=self.xs_fwb_lines,
+                       y=self.ys_fwb_lines,
                        name='FW at base',
                        line=dict(color='magenta', width=3.0)));
         fig_widths.add_trace(
-            go.Scatter(x=self.peaks_parms.peaks,
-                       y=self.peaks_parms.pk_hei,
+            go.Scatter(x=self.peaks,
+                       y=self.pk_hei,
                        name='peak_heights',
                        mode='markers',
                        line=dict(color='green', width=3.0)));
@@ -136,7 +136,7 @@ class SpecGraphics:
                        error_y=dict(
                            color='orange', width=3.0,
                            type='data',  # value of error bar given in data coordinates
-                           array=unc_y_4plot,
+                           array=self.unc_y_4plot,
                            visible=True),
                        name='Counts & uncertaintes',
                        line=dict(color='orange', width=0.3)));
@@ -146,8 +146,8 @@ class SpecGraphics:
                        name='eval_baseline',
                        line=dict(color='red', width=0.5)));
         figw4.add_trace(
-            go.Scatter(x=peaks,
-                       y=pk_hei,
+            go.Scatter(x=self.peaks,
+                       y=self.pk_hei,
                        name='peak_heights',
                        mode='markers',
                        line=dict(color='green', width=3.0)));
@@ -161,35 +161,35 @@ class SpecGraphics:
 
         fig_steps = go.FigureWidget();
         fig_steps.add_trace(
-            go.Scatter(x=chans[nzero & is_reg],
-                       y=counts[nzero & is_reg],
+            go.Scatter(x=self.chans[nzero & is_reg],
+                       y=self.counts[nzero & is_reg],
                        name='Counts in regions',
                        line=dict(color='navy', width=0.3),
                        mode='markers'));
         fig_steps.add_trace(
-            go.Scatter(x=chans[nzero & ~is_reg],
-                       y=counts[nzero & ~is_reg],
+            go.Scatter(x=self.chans[nzero & ~is_reg],
+                       y=self.counts[nzero & ~is_reg],
                        name='Counts out of regions',
                        line=dict(color='orange', width=0.3),
                        mode='markers'));
         fig_steps.add_trace(
-            go.Scatter(x=xs_all_mplets,
-                       y=ys_all_steps,
+            go.Scatter(x=self.xs_all_mplets,
+                       y=self.ys_all_steps,
                        name='ys_all_steps',
                        line=dict(color='brown', width=1.5)));
         fig_steps.add_trace(
-            go.Scatter(x=xs_all_mplets,
-                       y=ys_all_mplets,
+            go.Scatter(x=self.xs_all_mplets,
+                       y=self.ys_all_mplets,
                        name='ys_all_mplets',
                        line=dict(color='green', width=3.0)));
         fig_steps.add_trace(
-            go.Scatter(x=chans,
-                       y=final_baseline,
+            go.Scatter(x=self.chans,
+                       y=self.final_baseline,
                        name='final_baseline',
                        line=dict(color='magenta', width=0.7)));
         fig_steps.add_trace(
-            go.Scatter(x=peaks,
-                       y=pk_hei,
+            go.Scatter(x=self.peaks,
+                       y=self.pk_hei,
                        name='peak_heights',
                        marker=dict(color='yellow',
                                    symbol='circle',

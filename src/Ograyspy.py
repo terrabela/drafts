@@ -7,8 +7,8 @@ import pickle
 import os
 from spec_class import Spec
 
-class Ograyspy:
 
+class Ograyspy:
     files_list: list[str]
 
     def __init__(self, speed=0):
@@ -36,7 +36,6 @@ class Ograyspy:
                 pickle.dump(self.files_list, f)
 
         self.n_files = len(self.files_list)
-
 
     def choose_random_spectrum(self):
         self.a_spec_ind = randrange(self.n_files)

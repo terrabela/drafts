@@ -7,6 +7,8 @@ Created on Tue Nov 23 19:29:28 2021
 
 import numpy as np
 from scipy.interpolate import splrep, splev
+
+
 # , splder, sproot
 
 class CntArrayLike:
@@ -14,7 +16,7 @@ class CntArrayLike:
 
     def __init__(self, n_ch, sp_counts):
         self.n_ch = n_ch
-        self.x_s = np.linspace( 0, n_ch-1, n_ch )
+        self.x_s = np.linspace(0, n_ch - 1, n_ch)
         self.y0s = np.asarray(sp_counts)
         # self.terms_2nd_grade = np.zeros(self.n_ch)
         # self.terms_1st_grade = np.zeros(self.n_ch)
@@ -32,7 +34,7 @@ class CntArrayLike:
 
         smoo_cts = splrep(x=self.chans_nzero,
                           y=self.counts_nzero,
-                          w=1.0/self.unc_y, k=3)
+                          w=1.0 / self.unc_y, k=3)
         self.eval_smoo_cts = splev(self.chans, smoo_cts)
         self.spl_baseline = np.array([])
         self.eval_baseline = np.array([])
@@ -76,7 +78,7 @@ class CntArrayLike:
         # loc_stable_cts
 
     def calculate_base_line(self, mix_regions, smoo):
-        """Calculate base line."""
+        """Calculate baseline."""
         x_1 = self.chans_outof_regs()
         _first_nz = np.nonzero(self.y0s)[0][0]
         _init_fill = np.mean(self.y0s[_first_nz:_first_nz + 7]).astype(int)
@@ -84,7 +86,7 @@ class CntArrayLike:
         _y[0:_first_nz] = _init_fill
         _raiz_y = np.sqrt(_y)
         _raiz_y[_raiz_y < 2] = 1.0
-        _w = 1.0/_raiz_y
+        _w = 1.0 / _raiz_y
         # _w = _raiz_y
         _aux_list = []
         self.spl_baseline = splrep(x=x_1, y=_y, w=_w, k=3, s=smoo)
@@ -100,9 +102,9 @@ class CntArrayLike:
         self.ys_bl_in_reg = self.counts_in_regs()
         for multiplet_region in mix_regions:
             _ys = self.y0s[slice(*multiplet_region)]
-            _bl_in = splev(multiplet_region[0]-1, self.spl_baseline)
+            _bl_in = splev(multiplet_region[0] - 1, self.spl_baseline)
             _bl_fi = splev(multiplet_region[1], self.spl_baseline)
-            _a_step = self.step_baseline( _bl_in, _bl_fi, _ys)
+            _a_step = self.step_baseline(_bl_in, _bl_fi, _ys)
             _aux_list.append(_a_step)
             # print('multiplet_region: ', multiplet_region)
             # print('chans: ', _chans)
@@ -112,12 +114,12 @@ class CntArrayLike:
             # print('a_step: ', _a_step)
             # print('============================')
             net_mplet = _ys - _a_step
-        #    self.xs_all_mplets.extend(list(xs_mplet))
-        #    self.xs_all_mplets.append( None )
-        #    self.ys_all_mplets.extend(list(net_mplet))
-        #    self.ys_all_mplets.append( None )
-        #    self.ys_all_steps.extend(list(a_step))
-        #    self.ys_all_steps.append( None )
+            #    self.xs_all_mplets.extend(list(xs_mplet))
+            #    self.xs_all_mplets.append( None )
+            #    self.ys_all_mplets.extend(list(net_mplet))
+            #    self.ys_all_mplets.append( None )
+            #    self.ys_all_steps.extend(list(a_step))
+            #    self.ys_all_steps.append( None )
             self.net_spec[slice(*multiplet_region)] = np.where(net_mplet < 0.0, 0.0, net_mplet)
         #    self.final_baseline = self.y0s - self.net_spec
 
@@ -131,6 +133,6 @@ class CntArrayLike:
         delta_y = bl_fi - bl_in
         delta_x = y_s.size
         for i in range(delta_x):
-            sum_y = np.sum(y_s[0:i+1])
-            contin[i] = bl_in + delta_y * sum_y/gross_area
+            sum_y = np.sum(y_s[0:i + 1])
+            contin[i] = bl_in + delta_y * sum_y / gross_area
         return contin

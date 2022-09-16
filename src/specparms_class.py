@@ -26,27 +26,27 @@ class SpecParms:
         self.cnt_array_like = CntArrayLike(n_ch, self.spec_io.sp_counts)
         self.peaks_parms = PeaksParms()
 
-#        self.channel_energy_calib = ChannelEnergyCalib(self.spec_io.en_ch_calib,
-#                                                       self.spec_io.chan_calib,
-#                                                       self.spec_io.coeffs_ch_en)
+        #        self.channel_energy_calib = ChannelEnergyCalib(self.spec_io.en_ch_calib,
+        #                                                       self.spec_io.chan_calib,
+        #                                                       self.spec_io.coeffs_ch_en)
         self.channel_energy_calib = ChannelEnergyCalib(self.spec_io.coeffs_ch_en)
-#       self.energy_fwhm_calib = EnergyFwhmCalib(self.spec_io.en_fw_calib,
-#                                                self.spec_io.fwhm_calib,
-#                                                self.spec_io.coeffs_en_fw)
+        #       self.energy_fwhm_calib = EnergyFwhmCalib(self.spec_io.en_fw_calib,
+        #                                                self.spec_io.fwhm_calib,
+        #                                                self.spec_io.coeffs_en_fw)
         self.energy_fwhm_calib = EnergyFwhmCalib(self.spec_io.coeffs_en_fw)
-#        self.energy_efficiency_calib = EnergyEfficiencyCalib(self.spec_io.en_ef_calib,
-#                                                            self.spec_io.effi_calib)
+        #        self.energy_efficiency_calib = EnergyEfficiencyCalib(self.spec_io.en_ef_calib,
+        #                                                            self.spec_io.effi_calib)
 
-#        self.channel_energy_calib = ChannelEnergyCalib()
-#        self.energy_fwhm_calib = EnergyFwhmCalib()
-        try: # 2022-Jun-23
+        #        self.channel_energy_calib = ChannelEnergyCalib()
+        #        self.energy_fwhm_calib = EnergyFwhmCalib()
+        try:  # 2022-Jun-23
             self.spec_io.en_ef_calib
         except AttributeError:
             pass
         else:
             self.energy_efficiency_calib = EnergyEfficiencyCalib(self.spec_io.en_ef_calib)
 
-#    def total_analysis(self, smoo, widths_range, k_sep_pk=5.0):
+    #    def total_analysis(self, smoo, widths_range, k_sep_pk=5.0):
     def total_analysis(self, k_sep_pk, smoo, widths_ranges):
         """
         # sequência:
@@ -63,16 +63,16 @@ class SpecParms:
         #
         #
         """
-#        dá pobrema fazer em eval_smoo_cts
-#        self.peaks_parms.initial_peaks_search(self.cnt_array_like.n_ch,
-#                                              self.cnt_array_like.eval_smoo_cts)
+        #        dá pobrema fazer em eval_smoo_cts
+        #        self.peaks_parms.initial_peaks_search(self.cnt_array_like.n_ch,
+        #                                              self.cnt_array_like.eval_smoo_cts)
         # 2022-07-15: AQUI: ver como implementar isso:
         # assemble a local counts array with left tail substituted
         # counts_wo_ltail = np.concatenate(())
-        self.peaks_parms.peaks_search (cts_to_search=self.cnt_array_like.y0s, gross=True)
+        self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True)
         self.peaks_parms.redefine_widths_range()
-        self.peaks_parms.peaks_search (cts_to_search=self.cnt_array_like.y0s, gross=True,
-                                       widths_range=self.peaks_parms.widths_range)
+        self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True,
+                                      widths_range=self.peaks_parms.widths_range)
         self.peaks_parms.initial_width_lines()
 
         print(self.cnt_array_like.is_reg)
