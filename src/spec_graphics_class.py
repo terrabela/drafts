@@ -25,23 +25,31 @@ class SpecGraphics:
         self.ys_all_mplets = spec_parms.cnt_array_like.ys_all_mplets
         self.ys_all_steps = spec_parms.cnt_array_like.ys_all_steps
         self.final_baseline = spec_parms.cnt_array_like.final_baseline
+        self.chans_in_regs = spec_parms.cnt_array_like.chans_in_regs
+        self.counts_in_regs = spec_parms.cnt_array_like.counts_in_regs
+        self.chans_outof_regs = spec_parms.cnt_array_like.chans_outof_regs
+        self.counts_outof_regs = spec_parms.cnt_array_like.counts_outof_regs
+
         self.xs_fwb_lines = spec_parms.peaks_parms.xs_fwb_lines
         self.ys_fwb_lines = spec_parms.peaks_parms.ys_fwb_lines
+
 
         self.peaks_gro = spec_parms.peaks_parms.peaks_gro
         self.pk_hei_gro = spec_parms.peaks_parms.pk_hei_gro
         self.promns = spec_parms.peaks_parms.propts_gro['prominences']
+        self.peaks_net = spec_parms.peaks_parms.peaks_net
+        self.pk_hei_net = spec_parms.peaks_parms.propts_halfhe_net['peak_heights']
 
         self.xs_fwhm_lines = spec_parms.peaks_parms.xs_fwhm_lines
         self.ys_fwhm_lines = spec_parms.peaks_parms.ys_fwhm_lines
 
-    def plot_simple_scattergl(self, chans_nzero=None, counts_nzero=None, unc_y=None, f_name=None):
+    def plot_figw1(self):
         # Initialize figure
-        figw1 = go.FigureWidget();
+        self.figw1 = go.FigureWidget();
 
         # Add Traces
 
-        figw1.add_trace(
+        self.figw1.add_trace(
             go.Scattergl(x=self.chans_nzero,
                          y=self.counts_nzero,
                          error_y=dict(
@@ -52,33 +60,36 @@ class SpecGraphics:
                          name="Counts & uncertaintes",
                          line=dict(color='orange', width=0.7)));
 
-        figw1.add_trace(
+        self.figw1.add_trace(
             go.Scattergl(x=self.chans,
                          y=self.eval_smoo_cts,
                          name='Smoothed',
                          line=dict(color='navy', width=0.4)))
 
         # Set title and scale type
-        figw1.update_layout(title_text='Fig 1: ')  # + f_name)
-        figw1.update_yaxes(type="log");
+        # self.figw1.update_layout(title_text='Fig 1: ')  # + f_name)
+        # self.figw1.update_yaxes(type="log");
 
-        figw1.write_html('figw1.html', auto_open=True)
+        # AQUI: não precisa abrir página web nova.
+        # self.figw1.write_html('figw1.html', auto_open=True)
+
+    def plot_figw2(self):
 
         # graphic #2
 
-        fig_widths = go.FigureWidget(figw1);
+        self.fig_widths = go.FigureWidget(self.figw1);
 
-        fig_widths.add_trace(
+        self.fig_widths.add_trace(
             go.Scatter(x=self.xs_fwhm_lines,
                        y=self.ys_fwhm_lines,
                        name='FWHMs',
                        line=dict(color='blue', width=3.0)));
-        fig_widths.add_trace(
+        self.fig_widths.add_trace(
             go.Scatter(x=self.xs_fwb_lines,
                        y=self.ys_fwb_lines,
                        name='FW at base',
                        line=dict(color='magenta', width=3.0)));
-        fig_widths.add_trace(
+        self.fig_widths.add_trace(
             go.Scatter(x=self.peaks_gro,
                        y=self.pk_hei_gro,
                        name='peak_heights',
@@ -88,24 +99,25 @@ class SpecGraphics:
         # 2022-09-16
         # AQUI estou fazendo grande confusão com pk_hei, pk_gro, promns...
         # Organizar essa puta zona.
-        fig_widths.add_trace(
-            go.Scatter(x=self.peaks_gro,
-                       y=self.pk_hei_gro - self.promns,
-                       name='pk_hei-promns',
-                       mode='markers',
-                       line=dict(color='cyan', width=3.0)));
+        # fig_widths.add_trace(
+        #     go.Scatter(x=self.peaks_gro,
+        #                y=self.pk_hei_gro - self.promns,
+        #                name='pk_hei-promns',
+        #                mode='markers',
+        #                line=dict(color='cyan', width=3.0)));
         # Set title and scale type
-        fig_widths.update_layout(title_text="Fig 2: Peaks widths")
-        fig_widths.update_yaxes(type='log');
-        fig_widths.write_html('fig_widths.html', auto_open=True)
+        # self.fig_widths.update_layout(title_text="Fig 2: Peaks widths")
+        # self.fig_widths.update_yaxes(type='log');
+        # self.fig_widths.write_html('fig_widths.html', auto_open=True)
 
+    def plot_figw3(self):
         # graphic #3
 
-        fig_is_reg = go.FigureWidget(fig_widths);
+        fig_is_reg = go.FigureWidget(self.fig_widths);
 
         fig_is_reg.add_trace(
-            go.Scatter(x=self.cnt_array_like.chans_in_regs(),
-                       y=self.cnt_array_like.counts_in_regs(),
+            go.Scatter(x=self.chans_in_regs(),
+                       y=self.counts_in_regs(),
                        name='Counts in regions',
                        mode='markers',
                        marker=dict(
@@ -114,8 +126,8 @@ class SpecGraphics:
                            line=dict(color='MediumPurple', width=3)
                        )));
         fig_is_reg.add_trace(
-            go.Scatter(x=self.cnt_array_like.chans_outof_regs(),
-                       y=self.cnt_array_like.counts_outof_regs(),
+            go.Scatter(x=self.chans_outof_regs(),
+                       y=self.counts_outof_regs(),
                        name='Counts out of regions',
                        mode='markers',
                        marker=dict(
@@ -129,8 +141,8 @@ class SpecGraphics:
         fig_is_reg.update_yaxes(type='log');
         fig_is_reg.write_html('fig_is_reg.html', auto_open=True)
 
-        # graphic #4
 
+    def plot_figw4(self):
         # Initialize another figure
         figw4 = go.FigureWidget();
 
@@ -152,8 +164,8 @@ class SpecGraphics:
                        name='eval_baseline',
                        line=dict(color='red', width=0.5)));
         figw4.add_trace(
-            go.Scatter(x=self.peaks,
-                       y=self.pk_hei,
+            go.Scatter(x=self.peaks_gro,
+                       y=self.pk_hei_gro,
                        name='peak_heights',
                        mode='markers',
                        line=dict(color='green', width=3.0)));
@@ -163,18 +175,20 @@ class SpecGraphics:
         figw4.update_yaxes(type='log');
         figw4.write_html('figw4.html', auto_open=True)
 
+    def plot_figw5(self):
+
         # graphic #5
 
         fig_steps = go.FigureWidget();
         fig_steps.add_trace(
-            go.Scatter(x=self.chans[nzero & is_reg],
-                       y=self.counts[nzero & is_reg],
+            go.Scatter(x=self.chans[self.nzero & self.is_reg],
+                       y=self.counts[self.nzero & self.is_reg],
                        name='Counts in regions',
                        line=dict(color='navy', width=0.3),
                        mode='markers'));
         fig_steps.add_trace(
-            go.Scatter(x=self.chans[nzero & ~is_reg],
-                       y=self.counts[nzero & ~is_reg],
+            go.Scatter(x=self.chans[self.nzero & ~self.is_reg],
+                       y=self.counts[self.nzero & ~self.is_reg],
                        name='Counts out of regions',
                        line=dict(color='orange', width=0.3),
                        mode='markers'));
@@ -194,8 +208,8 @@ class SpecGraphics:
                        name='final_baseline',
                        line=dict(color='magenta', width=0.7)));
         fig_steps.add_trace(
-            go.Scatter(x=self.peaks,
-                       y=self.pk_hei,
+            go.Scatter(x=self.peaks_gro,
+                       y=self.pk_hei_gro,
                        name='peak_heights',
                        marker=dict(color='yellow',
                                    symbol='circle',
@@ -210,26 +224,34 @@ class SpecGraphics:
         fig_steps.update_yaxes(type='log');
         fig_steps.write_html('fig_steps.html', auto_open=True)
 
-        # graphic #6
+    def plot_figw6(self):
 
-        # peaks_net = spec_parms.peaks_parms.peaks_net
-        # pk_hei_net = spec_parms.peaks_parms.propts_halfhe_net['peak_heights']
+    # graphic #6
 
-        # figw6 = go.FigureWidget(figw4);
-        # figw6.add_trace(
-        #    go.Scatter(x=peaks_net,
-        #               y=pk_hei_net,
-        #               name='pk_hei_net',
-        #               marker=dict(color='yellow',
-        #                           symbol='circle',
-        #                           size=10,
-        #                           opacity=0.8,
-        #                           line=dict(color='magenta', width=2.0)
-        #                          ),
-        #               mode='markers',
-        #               line=dict(color='green',width=3.0)));
+        figw6 = go.FigureWidget(figw4);
+        figw6.add_trace(
+           go.Scatter(x=self.peaks_net,
+                      y=self.pk_hei_net,
+                      name='pk_hei_net',
+                      marker=dict(color='yellow',
+                                  symbol='circle',
+                                  size=10,
+                                  opacity=0.8,
+                                  line=dict(color='magenta', width=2.0)
+                                 ),
+                      mode='markers',
+                      line=dict(color='green',width=3.0)));
 
         # Set title and scale type
-        # figw6.update_layout(title_text='Fig 6: net spec analysis')
-        # figw6.update_yaxes(type='log');
-        # figw6.write_html('figw6.html', auto_open=True)
+        figw6.update_layout(title_text='Fig 6: net spec analysis')
+        figw6.update_yaxes(type='log');
+        figw6.write_html('figw6.html', auto_open=True)
+
+    def plot_simple_scattergl(self, chans_nzero=None, counts_nzero=None, unc_y=None, f_name=None):
+
+        self.plot_figw1() # jah estah contida na figw2
+        self.plot_figw2() # jah estah contida na figw3
+        self.plot_figw3()
+        self.plot_figw4()
+        self.plot_figw5()
+        self.plot_figw6()
