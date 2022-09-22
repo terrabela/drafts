@@ -5,6 +5,8 @@ Created on Wed Jun  2 16:06:14 2021
 @author: mmaduar
 """
 
+# https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#compile
+
 from pathlib import Path
 
 import numpy as np
@@ -20,11 +22,11 @@ class Spec:
         """
         Initialize a minimal members set from a read spectrum file.
 
-        :param kind: Optional "kind" of ingredients.
-        :type kind: list[str] or None
-        :raise lumache.InvalidKindError: If the kind is invalid.
-        :return: The ingredients list.
-        :rtype: list[str]
+        :param f_name: Spectrum's complete file name.
+        :type f_name: str
+        # :raise lumache.InvalidKindError: If the kind is invalid.
+        :return: 0 if spectrum was successfully opened; -1 otherwise.
+        :rtype: int
 
         """
         self.f_name = f_name

@@ -49,6 +49,14 @@ class SpecParms:
     #    def total_analysis(self, smoo, widths_range, k_sep_pk=5.0):
     def total_analysis(self, k_sep_pk, smoo, widths_ranges):
         """
+        Initialize a minimal members set from a read spectrum file.
+
+        :param k_sep_pk: Spectrum's complete file name.
+        :type f_name: str
+        # :raise lumache.InvalidKindError: If the kind is invalid.
+        :return: 0 if spectrum was successfully opened; -1 otherwise.
+        :rtype: int
+
         # sequência:
         #    incia obj spec_parms
         #    initial_peaks_search: acha picos candidatos, põe em peaks_parms.peaks
