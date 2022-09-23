@@ -48,6 +48,10 @@ class Spec:
         """Analyze thoroughly a spectrum."""
         self.spec_parms.total_analysis(k_sep_pk, smoo, widths_range)
 
+    def perform_basic_net_area_calculation(self):
+        """Perform a very rough net area calculation"""
+        self.spec_parms.peaks_parms.basic_net_area_calculation()
+
     def plot_graphics(self):
         """Plot graphics (?)."""
         self.spec_graphics = SpecGraphics(self.spec_parms)

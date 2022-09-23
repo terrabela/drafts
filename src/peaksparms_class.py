@@ -29,22 +29,9 @@ class PeaksParms:
         self.ys_fwb_lines = np.array([])
 
         self.mix_regions = np.array([])
-        self.width_range = (None, None)
 
         self.plateaux = np.array([])
 
-        self.fwhm_ch_ini = np.array([])
-        self.fwhm_ch_fin = np.array([])
-        self.n_ch_fwhm = np.array([])
-
-        self.fwhm_chans = []
-        self.counts_gross = []
-        self.counts_net = []
-        self.sum_gross = np.array([])
-        self.sum_net = np.array([])
-        self.s_sum_net = np.array([])
-
-        self.fwhm_ctrs = np.array([])
 
     #    def initial_peaks_search(self, n_ch, cts_to_search, peaks_to_set, propts_to_set,
     #                             peak_sd_fact=3.0, widths_range=(None, None),
@@ -70,8 +57,8 @@ class PeaksParms:
             self.fwhm_ch_ini = np.ceil(self.propts_gro['left_ips']).astype(int)
             self.fwhm_ch_fin = np.floor(self.propts_gro['right_ips']).astype(int)
         else:
-            #            if widths_range == (None, None):
-            #                widths_range = (n_ch * 0.0003, n_ch * 0.01)
+            if widths_range == (None, None):
+                widths_range = (n_ch * 0.0003, n_ch * 0.01)
             self.widths_range_net = widths_range
             self.peaks_net, self.propts_net = find_peaks(
                 cts_to_search,
@@ -80,22 +67,6 @@ class PeaksParms:
                 prominence=prominence,
                 width=widths_range,
                 rel_height=0.5)
-
-        #####################################
-        # PAREI AQUI 24-Mar-2022
-        #####################################
-        # self.net_fwhm_chans = [
-        #    np.array(range(_net_fw_ch_ini[i_pk], self.fwhm_ch_fin[i_pk]+1))
-        #    for i_pk in range(n_pk) ]
-
-    #        if areas_calc=='under_fwhm':
-    #            # NET Centroids
-    #            self.net_fwhm_ctrs = np.array([
-    ###                np.average(self.fwhm_chans[i_pk], weights=self.counts_net[i_pk])
-    #                for i_pk in range(n_pk)
-    #                ])
-    # Uncertainties in areas
-    #           self.s_sum_net = np.sqrt(self.sum_gross + self.n_ch_fwhm**2 * self.plateaux)
 
     def redefine_widths_range(self):
         """Redefine widths range."""

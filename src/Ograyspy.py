@@ -63,7 +63,5 @@ if __name__ == '__main__':
     # cntarr = a_spec.spec_parms.cnt_array_like
     # pkprms = a_spec.spec_parms.peaks_parms
     # 2022-Jun-14
-    # Verificando o que se tem até agora em a_raw_spec:
-    # print(vars(a_spec))
     # (Pode pular e ir direto aos gráficos)
-    # a_spec.plot_graphics()
+    a_spec.plot_graphics()

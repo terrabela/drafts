@@ -20,6 +20,7 @@ class SpecGraphics:
         self.xs_bl_out_reg = spec_parms.cnt_array_like.xs_bl_out_reg
         self.ys_bl_out_reg = spec_parms.cnt_array_like.ys_bl_out_reg
         self.eval_smoo_cts = spec_parms.cnt_array_like.eval_smoo_cts
+        self.net_spec = spec_parms.cnt_array_like.net_spec
         self.is_reg = spec_parms.cnt_array_like.is_reg
         self.xs_all_mplets = spec_parms.cnt_array_like.xs_all_mplets
         self.ys_all_mplets = spec_parms.cnt_array_like.ys_all_mplets
@@ -38,7 +39,7 @@ class SpecGraphics:
         self.pk_hei_gro = spec_parms.peaks_parms.pk_hei_gro
         self.promns = spec_parms.peaks_parms.propts_gro['prominences']
         self.peaks_net = spec_parms.peaks_parms.peaks_net
-        self.pk_hei_net = spec_parms.peaks_parms.propts_halfhe_net['peak_heights']
+        self.pk_hei_net = spec_parms.peaks_parms.propts_net['peak_heights']
 
         self.xs_fwhm_lines = spec_parms.peaks_parms.xs_fwhm_lines
         self.ys_fwhm_lines = spec_parms.peaks_parms.ys_fwhm_lines
@@ -113,9 +114,9 @@ class SpecGraphics:
     def plot_figw3(self):
         # graphic #3
 
-        fig_is_reg = go.FigureWidget(self.fig_widths);
+        self.fig_is_reg = go.FigureWidget(self.fig_widths);
 
-        fig_is_reg.add_trace(
+        self.fig_is_reg.add_trace(
             go.Scatter(x=self.chans_in_regs(),
                        y=self.counts_in_regs(),
                        name='Counts in regions',
@@ -125,7 +126,7 @@ class SpecGraphics:
                            size=6,
                            line=dict(color='MediumPurple', width=3)
                        )));
-        fig_is_reg.add_trace(
+        self.fig_is_reg.add_trace(
             go.Scatter(x=self.chans_outof_regs(),
                        y=self.counts_outof_regs(),
                        name='Counts out of regions',
@@ -137,18 +138,17 @@ class SpecGraphics:
                        )));
 
         # Set title and scale type
-        fig_is_reg.update_layout(title_text="Fig 3: Definition of regions")
-        fig_is_reg.update_yaxes(type='log');
-        fig_is_reg.write_html('fig_is_reg.html', auto_open=True)
-
+        self.fig_is_reg.update_layout(title_text="Fig 3: Definition of regions")
+        self.fig_is_reg.update_yaxes(type='log');
+        self.fig_is_reg.write_html('fig_is_reg.html', auto_open=True)
 
     def plot_figw4(self):
         # Initialize another figure
-        figw4 = go.FigureWidget();
+        self.figw4 = go.FigureWidget();
 
         # Add Traces
 
-        figw4.add_trace(
+        self.figw4.add_trace(
             go.Scatter(x=self.chans_nzero,
                        y=self.counts_nzero,
                        error_y=dict(
@@ -158,12 +158,12 @@ class SpecGraphics:
                            visible=True),
                        name='Counts & uncertaintes',
                        line=dict(color='orange', width=0.3)));
-        figw4.add_trace(
+        self.figw4.add_trace(
             go.Scatter(x=self.xs_bl_out_reg,
                        y=self.ys_bl_out_reg,
                        name='eval_baseline',
                        line=dict(color='red', width=0.5)));
-        figw4.add_trace(
+        self.figw4.add_trace(
             go.Scatter(x=self.peaks_gro,
                        y=self.pk_hei_gro,
                        name='peak_heights',
@@ -171,43 +171,43 @@ class SpecGraphics:
                        line=dict(color='green', width=3.0)));
 
         # Set title and scale type
-        figw4.update_layout(title_text='Fig 4: Base line')
-        figw4.update_yaxes(type='log');
-        figw4.write_html('figw4.html', auto_open=True)
+        self.figw4.update_layout(title_text='Fig 4: Base line')
+        self.figw4.update_yaxes(type='log');
+        self.figw4.write_html('figw4.html', auto_open=True)
 
     def plot_figw5(self):
 
         # graphic #5
 
-        fig_steps = go.FigureWidget();
-        fig_steps.add_trace(
+        self.fig_steps = go.FigureWidget();
+        self.fig_steps.add_trace(
             go.Scatter(x=self.chans[self.nzero & self.is_reg],
                        y=self.counts[self.nzero & self.is_reg],
                        name='Counts in regions',
                        line=dict(color='navy', width=0.3),
                        mode='markers'));
-        fig_steps.add_trace(
+        self.fig_steps.add_trace(
             go.Scatter(x=self.chans[self.nzero & ~self.is_reg],
                        y=self.counts[self.nzero & ~self.is_reg],
                        name='Counts out of regions',
                        line=dict(color='orange', width=0.3),
                        mode='markers'));
-        fig_steps.add_trace(
+        self.fig_steps.add_trace(
             go.Scatter(x=self.xs_all_mplets,
                        y=self.ys_all_steps,
                        name='ys_all_steps',
                        line=dict(color='brown', width=1.5)));
-        fig_steps.add_trace(
+        self.fig_steps.add_trace(
             go.Scatter(x=self.xs_all_mplets,
                        y=self.ys_all_mplets,
                        name='ys_all_mplets',
                        line=dict(color='green', width=3.0)));
-        fig_steps.add_trace(
+        self.fig_steps.add_trace(
             go.Scatter(x=self.chans,
                        y=self.final_baseline,
                        name='final_baseline',
                        line=dict(color='magenta', width=0.7)));
-        fig_steps.add_trace(
+        self.fig_steps.add_trace(
             go.Scatter(x=self.peaks_gro,
                        y=self.pk_hei_gro,
                        name='peak_heights',
@@ -220,32 +220,39 @@ class SpecGraphics:
                        mode='markers',
                        line=dict(color='green', width=3.0)));
         # Set title and scale type
-        fig_steps.update_layout(title_text='Fig 5: fig_steps')
-        fig_steps.update_yaxes(type='log');
-        fig_steps.write_html('fig_steps.html', auto_open=True)
+        self.fig_steps.update_layout(title_text='Fig 5: fig_steps')
+        self.fig_steps.update_yaxes(type='log');
+        self.fig_steps.write_html('fig_steps.html', auto_open=True)
 
     def plot_figw6(self):
 
     # graphic #6
 
-        figw6 = go.FigureWidget(figw4);
-        figw6.add_trace(
-           go.Scatter(x=self.peaks_net,
-                      y=self.pk_hei_net,
-                      name='pk_hei_net',
-                      marker=dict(color='yellow',
-                                  symbol='circle',
-                                  size=10,
-                                  opacity=0.8,
-                                  line=dict(color='magenta', width=2.0)
-                                 ),
-                      mode='markers',
-                      line=dict(color='green',width=3.0)));
+        self.figw6 = go.FigureWidget();
+
+        self.figw6.add_trace(
+            go.Scatter(x=self.chans,
+                       y=self.net_spec,
+                       name='net_spec',
+                       line=dict(color='magenta', width=0.7)));
+
+        self.figw6.add_trace(
+               go.Scatter(x=self.peaks_net,
+                          y=self.pk_hei_net,
+                          name='pk_hei_net',
+                          marker=dict(color='yellow',
+                                      symbol='circle',
+                                      size=10,
+                                      opacity=0.8,
+                                      line=dict(color='magenta', width=2.0)
+                                     ),
+                          mode='markers',
+                          line=dict(color='green',width=3.0)));
 
         # Set title and scale type
-        figw6.update_layout(title_text='Fig 6: net spec analysis')
-        figw6.update_yaxes(type='log');
-        figw6.write_html('figw6.html', auto_open=True)
+        self.figw6.update_layout(title_text='Fig 6: net spec analysis')
+        self.figw6.update_yaxes(type='log');
+        self.figw6.write_html('figw6.html', auto_open=True)
 
     def plot_simple_scattergl(self, chans_nzero=None, counts_nzero=None, unc_y=None, f_name=None):
 
@@ -253,5 +260,5 @@ class SpecGraphics:
         self.plot_figw2() # jah estah contida na figw3
         self.plot_figw3()
         self.plot_figw4()
-        self.plot_figw5()
-        self.plot_figw6()
+        # self.plot_figw5()
+        # self.plot_figw6()
