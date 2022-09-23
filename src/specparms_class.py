@@ -93,6 +93,7 @@ class SpecParms:
         self.peaks_parms.net_width_lines()
         self.peaks_parms.define_net_multiplets_regions(self.cnt_array_like.is_net_reg,
                                                        k_sep_pk=k_sep_pk)
+        print(vars(self.peaks_parms))
 
     def chunks_from_file(self, chunksize=8192):
         """ Read file chunks. """

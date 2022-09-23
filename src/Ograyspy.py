@@ -66,4 +66,4 @@ if __name__ == '__main__':
     # Verificando o que se tem até agora em a_raw_spec:
     # print(vars(a_spec))
     # (Pode pular e ir direto aos gráficos)
-    a_spec.plot_graphics()
+    # a_spec.plot_graphics()
