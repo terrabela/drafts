@@ -23,7 +23,7 @@ class SpecParms:
         #
         n_ch = self.spec_io.n_ch
 
-        self.cnt_array_like = CntArrayLike(n_ch, self.spec_io.sp_counts)
+        self.cnt_array_like = CntArrayLike(self.spec_io.sp_counts)
         self.peaks_parms = PeaksParms()
 
         #        self.channel_energy_calib = ChannelEnergyCalib(self.spec_io.en_ch_calib,
@@ -75,24 +75,27 @@ class SpecParms:
         #        self.peaks_parms.initial_peaks_search(self.cnt_array_like.n_ch,
         #                                              self.cnt_array_like.eval_smoo_cts)
 
-        self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True)
-        self.peaks_parms.redefine_widths_range()
-        self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True,
-                                      widths_range=self.peaks_parms.widths_range)
-        self.peaks_parms.initial_width_lines()
+        if self.cnt_array_like.n_ch > 0:
+            self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True)
+            self.peaks_parms.redefine_widths_range()
+            self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True,
+                                          widths_range=self.peaks_parms.widths_range)
+            self.peaks_parms.initial_width_lines()
 
-        # print(self.cnt_array_like.is_reg)
-        # print(self.cnt_array_like.is_reg.size)
-        # print(k_sep_pk)
+            # print(self.cnt_array_like.is_reg)
+            # print(self.cnt_array_like.is_reg.size)
+            # print(k_sep_pk)
 
-        self.peaks_parms.define_multiplets_regions(self.cnt_array_like.is_reg,
-                                                   k_sep_pk=k_sep_pk)
-        self.cnt_array_like.calculate_base_line(self.peaks_parms.mix_regions, smoo)
-
-        self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.net_spec, gross=False)
-        self.peaks_parms.net_width_lines()
-        self.peaks_parms.define_net_multiplets_regions(self.cnt_array_like.is_net_reg,
+            self.peaks_parms.define_multiplets_regions(self.cnt_array_like.is_reg,
                                                        k_sep_pk=k_sep_pk)
+            self.cnt_array_like.calculate_base_line(self.peaks_parms.mix_regions, smoo)
+
+            self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.net_spec, gross=False)
+            self.peaks_parms.net_width_lines()
+            self.peaks_parms.define_net_multiplets_regions(self.cnt_array_like.is_net_reg,
+                                                           k_sep_pk=k_sep_pk)
+        else:
+            print('No analysis applicable as spectrum is empty.')
         print(vars(self.peaks_parms))
 
     def chunks_from_file(self, chunksize=8192):

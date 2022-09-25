@@ -14,14 +14,15 @@ from scipy.interpolate import splrep, splev
 class CntArrayLike:
     """ Counts array alike vars class. """
 
-    def __init__(self, n_ch, sp_counts):
-        self.n_ch = n_ch
-        self.x_s = np.linspace(0, n_ch - 1, n_ch)
+
+    def __init__(self, sp_counts):
         self.y0s = np.asarray(sp_counts)
+        self.n_ch = len(sp_counts)
+        self.x_s = np.linspace(0, self.n_ch - 1, self.n_ch)
         # self.terms_2nd_grade = np.zeros(self.n_ch)
         # self.terms_1st_grade = np.zeros(self.n_ch)
         # self.terms_0th_grade = np.zeros(self.n_ch)
-        self.varnc_2nd_grade = np.zeros(n_ch)
+        self.varnc_2nd_grade = np.zeros(self.n_ch)
 
         self.nzero = self.y0s > 0
         self.chans = self.x_s
@@ -32,10 +33,13 @@ class CntArrayLike:
 
         self.unc_y_4plot = np.where(self.unc_y < 1.4, 0.0, self.unc_y)
 
-        smoo_cts = splrep(x=self.chans_nzero,
-                          y=self.counts_nzero,
-                          w=1.0 / self.unc_y, k=3)
-        self.eval_smoo_cts = splev(self.chans, smoo_cts)
+        if self.n_ch > 0:
+            smoo_cts = splrep(x=self.chans_nzero,
+                              y=self.counts_nzero,
+                              w=1.0 / self.unc_y, k=3)
+            self.eval_smoo_cts = splev(self.chans, smoo_cts)
+        else:
+            self.eval_smoo_cts = np.array([])
         self.spl_baseline = np.array([])
         self.eval_baseline = np.array([])
 
@@ -43,11 +47,11 @@ class CntArrayLike:
         self.ys_bl_out_reg = np.array([])
         self.ws_bl_out_reg = np.array([])
 
-        self.is_reg = np.zeros(n_ch, dtype=bool)
-        self.is_net_reg = np.zeros(n_ch, dtype=bool)
+        self.is_reg = np.zeros(self.n_ch, dtype=bool)
+        self.is_net_reg = np.zeros(self.n_ch, dtype=bool)
 
-        self.net_spec = np.zeros(n_ch)
-        self.final_baseline = np.zeros(n_ch)
+        self.net_spec = np.zeros(self.n_ch)
+        self.final_baseline = np.zeros(self.n_ch)
         self.xs_all_mplets = []
         self.ys_all_mplets = []
         self.ys_all_steps = []

@@ -34,7 +34,6 @@ class SpecGraphics:
         self.xs_fwb_lines = spec_parms.peaks_parms.xs_fwb_lines
         self.ys_fwb_lines = spec_parms.peaks_parms.ys_fwb_lines
 
-
         self.peaks_gro = spec_parms.peaks_parms.peaks_gro
         self.pk_hei_gro = spec_parms.peaks_parms.pk_hei_gro
         self.promns = spec_parms.peaks_parms.propts_gro['prominences']
