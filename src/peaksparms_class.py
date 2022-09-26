@@ -18,7 +18,7 @@ class PeaksParms:
         self.pk_hei_gro = np.array([])
         self.propts_gro = {}
         self.propts_net = {}
-
+        self.gross_widths = (None, None)
         # self.width_heights_f = np.array([])
         # self.left_ips_f = np.array([])
         # self.right_ips_f = np.array([])
@@ -53,6 +53,7 @@ class PeaksParms:
                 prominence=prominence,
                 width=widths_range,
                 rel_height=0.5)
+
             self.plateaux = self.propts_gro['peak_heights'] - self.propts_gro['prominences']
             self.fwhm_ch_ini = np.ceil(self.propts_gro['left_ips']).astype(int)
             self.fwhm_ch_fin = np.floor(self.propts_gro['right_ips']).astype(int)
@@ -70,12 +71,11 @@ class PeaksParms:
 
     def redefine_widths_range(self):
         """Redefine widths range."""
-        ws_range = self.propts_gro['widths']
-        ws_min = np.percentile(ws_range, 25) * 0.5
-        ws_max = np.percentile(ws_range, 75) * 2.0
-        self.widths_range = (ws_min, ws_max)
+        ws_min = np.percentile(self.propts_gro['widths'], 25) * 0.5
+        ws_max = np.percentile(self.propts_gro['widths'], 75) * 2.0
+        self.gross_widths = (ws_min, ws_max)
 
-    def initial_width_lines(self):
+    def define_width_lines(self):
         """Build width peaks related lines, just for plotting."""
         n_pk = self.peaks_gro.size
         if n_pk != 0:
@@ -122,7 +122,8 @@ class PeaksParms:
         fins = fins[:min_size]
         self.mix_regions = np.concatenate(np.array([[inis], [fins]])).T
 
-        print('define_GROSS_multiplets_regions completado')
+        print('define_GROSS_multiplets_regions completado. Define:')
+        print('self.mix_regions: ', self.mix_regions)
 
     def define_net_multiplets_regions(self, is_reg, k_sep_pk):
         """Define multiplet regions from already found peaks with proper widths."""

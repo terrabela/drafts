@@ -76,27 +76,53 @@ class SpecParms:
         #                                              self.cnt_array_like.eval_smoo_cts)
 
         if self.cnt_array_like.n_ch > 0:
+            print('k_sep_pk: ', k_sep_pk)
+            print('smoo: ', smoo)
+            print('widths_ranges: ', widths_ranges)
+            print('=================')
+            print('Exec peaks_search(gross=True)')
             self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True)
+            print("self.peaks_parms.peaks_gro: ", self.peaks_parms.peaks_gro)
+            print("self.peaks_parms.propts_gro['widths']: ", self.peaks_parms.propts_gro['widths'])
+            print("self.peaks_parms.gross_widths = (ws_min, ws_max): ", self.peaks_parms.gross_widths)
+            print('=================')
+            print('Exec redefine_widths_range()')
             self.peaks_parms.redefine_widths_range()
+            print('=================')
+            print('Exec peaks_search(gross=True)')
             self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True,
-                                          widths_range=self.peaks_parms.widths_range)
-            self.peaks_parms.initial_width_lines()
+                                          widths_range=self.peaks_parms.gross_widths)
+            print("self.peaks_parms.peaks_gro: ", self.peaks_parms.peaks_gro)
+            print("self.peaks_parms.propts_gro: ", self.peaks_parms.propts_gro)
+            print("self.peaks_parms.gross_widths = (ws_min, ws_max): ", self.peaks_parms.gross_widths)
+            print('=================')
+            self.peaks_parms.define_width_lines()
 
-            # print(self.cnt_array_like.is_reg)
-            # print(self.cnt_array_like.is_reg.size)
+            print(self.cnt_array_like.is_reg)
+            print(self.cnt_array_like.is_reg.size)
             # print(k_sep_pk)
 
             self.peaks_parms.define_multiplets_regions(self.cnt_array_like.is_reg,
                                                        k_sep_pk=k_sep_pk)
             self.cnt_array_like.calculate_base_line(self.peaks_parms.mix_regions, smoo)
 
-            self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.net_spec, gross=False)
-            self.peaks_parms.net_width_lines()
-            self.peaks_parms.define_net_multiplets_regions(self.cnt_array_like.is_net_reg,
-                                                           k_sep_pk=k_sep_pk)
+            print('self.cnt_array_like.calculated_step_counts:')
+            for i in self.cnt_array_like.calculated_step_counts:
+                print(i)
+            print (len(self.cnt_array_like.calculated_step_counts))
+
+            print('self.cnt_array_like.chans_in_multiplets_list:')
+            for i in self.cnt_array_like.chans_in_multiplets_list:
+                print(i)
+            print (len(self.cnt_array_like.chans_in_multiplets_list))
+
+            # self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.net_spec, gross=False)
+            # self.peaks_parms.net_width_lines()
+            # self.peaks_parms.define_net_multiplets_regions(self.cnt_array_like.is_net_reg,
+            #                                                k_sep_pk=k_sep_pk)
         else:
             print('No analysis applicable as spectrum is empty.')
-        print(vars(self.peaks_parms))
+        # print(vars(self.peaks_parms))
 
     def chunks_from_file(self, chunksize=8192):
         """ Read file chunks. """

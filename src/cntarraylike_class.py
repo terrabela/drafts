@@ -56,6 +56,9 @@ class CntArrayLike:
         self.ys_all_mplets = []
         self.ys_all_steps = []
 
+        self.chans_in_multiplets_list = []
+        self.calculated_step_counts = []
+
     def chans_in_regs(self):
         """ Channels in regions. """
         return self.chans[self.is_reg]
@@ -96,7 +99,6 @@ class CntArrayLike:
         _raiz_y[_raiz_y < 2] = 1.0
         _w = 1.0 / _raiz_y
         # _w = _raiz_y
-        _aux_list = []
         self.spl_baseline = splrep(x=x_1, y=_y, w=_w, k=3, s=smoo)
         # self.eval_baseline = splev(x_1, self.spl_baseline)
         self.eval_baseline = splev(self.chans, self.spl_baseline)
@@ -109,11 +111,13 @@ class CntArrayLike:
         self.xs_bl_in_reg = self.chans_in_regs()
         self.ys_bl_in_reg = self.counts_in_regs()
         for multiplet_region in mix_regions:
+            _xs = self.chans[slice(*multiplet_region)]
             _ys = self.y0s[slice(*multiplet_region)]
             _bl_in = splev(multiplet_region[0] - 1, self.spl_baseline)
             _bl_fi = splev(multiplet_region[1], self.spl_baseline)
             _a_step = self.step_baseline(_bl_in, _bl_fi, _ys)
-            _aux_list.append(_a_step)
+            self.chans_in_multiplets_list.append(_xs)
+            self.calculated_step_counts.append(_a_step)
             # print('multiplet_region: ', multiplet_region)
             # print('chans: ', _chans)
             # print('_ys: ', _ys)
@@ -131,8 +135,9 @@ class CntArrayLike:
             self.net_spec[slice(*multiplet_region)] = np.where(net_mplet < 0.0, 0.0, net_mplet)
         #    self.final_baseline = self.y0s - self.net_spec
 
-        if len(_aux_list) != 0:
-            self.calculated_step_counts = np.concatenate(_aux_list)
+        # ELIMINAR:
+        # if len(_aux_list) != 0:
+        #     self.calculated_step_counts = np.concatenate(_aux_list)
 
     def step_baseline(self, bl_in, bl_fi, y_s):
         """Calculate step baseline inside a region. Called just by calculate_base_line."""
@@ -144,3 +149,22 @@ class CntArrayLike:
             sum_y = np.sum(y_s[0:i + 1])
             contin[i] = bl_in + delta_y * sum_y / gross_area
         return contin
+
+    def united_step_baselines(self):
+        """Build concatenated arrays of step baselines, just for plotting."""
+        self.plotsteps_x = [j for j in [[i, None] for i in self.chans_in_multiplets_list]
+        self.plotsteps_y = [[i, None] for i in self.calculated_step_counts]
+
+        if n_pk != 0:
+            self.xs_fwhm_lines = np.concatenate(np.stack(
+                (self.propts_gro['left_ips'], self.propts_gro['right_ips'],
+                 np.full(n_pk, None)), axis=1))
+            self.ys_fwhm_lines = np.concatenate(np.stack(
+                (self.propts_gro['width_heights'],
+                 self.propts_gro['width_heights'],
+                 np.full(n_pk, None)), axis=1))
+            self.xs_fwb_lines = np.concatenate(np.stack(
+                (self.fwhm_ch_ini, self.fwhm_ch_fin, np.full(n_pk, None)),
+                axis=1))
+            self.ys_fwb_lines = np.concatenate(np.stack(
+                (self.plateaux, self.plateaux, np.full(n_pk, None)), axis=1))

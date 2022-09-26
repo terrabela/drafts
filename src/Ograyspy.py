@@ -58,8 +58,8 @@ if __name__ == '__main__':
     print('No. spec files: ', my_ogra.n_files)
 
     # given_spec_name = "Filtros/2022/Cci/CCI1603-I.Chn"
-    # given_spec_name = "Si/SI2018/SI11318.Chn"
-    given_spec_name = "Eso_non_existe.Chn"
+    given_spec_name = "Si/SI2018/SI11318.Chn"
+    # given_spec_name = "Eso_non_existe.Chn"
     if given_spec_name in my_ogra.files_list:
         print("Found!")
         complete_spec_name = str(my_ogra.spectra_path) + '/' + given_spec_name
@@ -79,4 +79,4 @@ if __name__ == '__main__':
     # pkprms = a_spec.spec_parms.peaks_parms
     # 2022-Jun-14
     # (Pode pular e ir direto aos gráficos)
-    a_spec.plot_graphics()
+    # a_spec.plot_graphics(a_spec.spec_parms)

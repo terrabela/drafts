@@ -52,7 +52,7 @@ class Spec:
         """Perform a very rough net area calculation"""
         self.spec_parms.peaks_parms.basic_net_area_calculation()
 
-    def plot_graphics(self):
+    def plot_graphics(self, parms):
         """Plot graphics (?)."""
-        self.spec_graphics = SpecGraphics(self.spec_parms)
+        self.spec_graphics = SpecGraphics(parms)
         self.spec_graphics.plot_simple_scattergl()
