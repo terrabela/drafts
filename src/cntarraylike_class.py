@@ -50,7 +50,7 @@ class CntArrayLike:
         self.ys_bl_out_reg = np.array([])
         self.ws_bl_out_reg = np.array([])
 
-        self.is_reg = np.zeros(self.n_ch, dtype=bool)
+        self.is_gro_reg = np.zeros(self.n_ch, dtype=bool)
         self.is_net_reg = np.zeros(self.n_ch, dtype=bool)
 
         self.net_spec = np.zeros(self.n_ch)

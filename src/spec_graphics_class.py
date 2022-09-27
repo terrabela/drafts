@@ -204,9 +204,20 @@ class SpecGraphics():
                          name='net_spec',
                          line=dict(color='magenta', width=0.7)));
 
+        self.figw6.add_trace(
+            go.Scattergl(x=self.parms.peaks_parms.peaks_net,
+                         y=self.parms.peaks_parms.propts_net['peak_heights'],
+                         name='peak_heights',
+                         marker=dict(color='orange',
+                                     symbol='circle',
+                                     size=10,
+                                     opacity=0.8,
+                                     line=dict(color='blue', width=2.0)
+                                     ),
+                         mode='markers'));
         # Set title and scale type
         self.figw6.update_layout(title_text='Fig 6: net spec analysis')
-        self.figw6.update_yaxes(type='log');
+        # self.figw6.update_yaxes(type='log');
         self.figw6.write_html('figw6.html', auto_open=True)
 
     def plot_simple_scattergl(self, chans_nzero=None, counts_nzero=None, unc_y=None, f_name=None):
@@ -217,28 +228,3 @@ class SpecGraphics():
         self.plot_figw4()
         # self.plot_figw5()
         self.plot_figw6()
-
-    def rascunho(self):
-        pass
-#                       y=self.ys_bl_out_reg,
-#                       name='eval_baseline',
-#                       line=dict(color='red', width=0.5)));
-#        self.figw4.add_trace(
-#            go.Scatter(x=self.peaks_gro,
-#                       y=self.pk_hei_gro,
-#                       name='peak_heights',
-#                       mode='markers',
-#                       line=dict(color='green', width=3.0)));
-
-# self.figw6.add_trace(
-#     go.Scattergl(x=self.peaks_net,
-#                  y=self.pk_hei_net,
-#                  name='pk_hei_net',
-#                  marker=dict(color='yellow',
-#                              symbol='circle',
-#                              size=10,
-#                              opacity=0.8,
-#                              line=dict(color='magenta', width=2.0)
-#                              ),
-#                  mode='markers',
-#                  line=dict(color='green', width=3.0)));

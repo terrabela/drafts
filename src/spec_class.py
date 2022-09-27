@@ -32,7 +32,7 @@ class Spec:
         self.f_name = f_name
         self.sufx = Path(f_name).suffix.casefold()
         #
-        self.spec_parms = SpecParms(self.f_name, self.sufx)
+        self.parms = SpecParms(self.f_name, self.sufx)
         # self.spec_graphics = SpecGraphics()
         self.pkl_file = Path(self.f_name).with_suffix('.xz')
 
@@ -46,7 +46,10 @@ class Spec:
 
     def total_analysis(self, k_sep_pk=2.0, smoo=3000.0, widths_range=(4.0, 20.0)):
         """Analyze thoroughly a spectrum."""
-        self.spec_parms.total_analysis(k_sep_pk, smoo, widths_range)
+        # self.gro_parms.spe_analysis(k_sep_pk, smoo, widths_range)
+        # self.net_parms.spe_analysis(k_sep_pk, smoo, widths_range)
+        # AQUI mudando a abordagem, 2022-set-27
+        self.parms.spe_analysis(k_sep_pk, smoo, widths_range)
 
     def perform_basic_net_area_calculation(self):
         """Perform a very rough net area calculation"""

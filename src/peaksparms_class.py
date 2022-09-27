@@ -19,6 +19,7 @@ class PeaksParms:
         self.propts_gro = {}
         self.propts_net = {}
         self.gross_widths = (None, None)
+        self.net_widths = (None, None)
         # self.width_heights_f = np.array([])
         # self.left_ips_f = np.array([])
         # self.right_ips_f = np.array([])
@@ -55,8 +56,8 @@ class PeaksParms:
                 rel_height=0.5)
 
             self.plateaux = self.propts_gro['peak_heights'] - self.propts_gro['prominences']
-            fwhm_ch_ini = np.ceil(self.propts_gro['left_ips']).astype(int)
-            fwhm_ch_fin = np.floor(self.propts_gro['right_ips']).astype(int)
+            self.fwhm_ch_ini_gro = np.ceil(self.propts_gro['left_ips']).astype(int)
+            self.fwhm_ch_fin_gro = np.floor(self.propts_gro['right_ips']).astype(int)
         else:
             if widths_range == (None, None):
                 widths_range = (n_ch * 0.0003, n_ch * 0.01)
@@ -68,31 +69,43 @@ class PeaksParms:
                 prominence=prominence,
                 width=widths_range,
                 rel_height=0.5)
-            fwhm_ch_ini = np.ceil(self.propts_gro['left_ips']).astype(int)
-            fwhm_ch_fin = np.floor(self.propts_gro['right_ips']).astype(int)
+            self.fwhm_ch_ini_net = np.ceil(self.propts_gro['left_ips']).astype(int)
+            self.fwhm_ch_fin_net = np.floor(self.propts_gro['right_ips']).astype(int)
 
-    def redefine_widths_range(self):
+    def redefine_widths_range(self, widths_pair, gross):
         """Redefine widths range."""
         ws_min = np.percentile(self.propts_gro['widths'], 25) * 0.5
         ws_max = np.percentile(self.propts_gro['widths'], 75) * 2.0
-        self.gross_widths = (ws_min, ws_max)
+        widths_pair = (ws_min, ws_max)
 
-    def define_width_lines(self, fwhm_ch_ini, fwhm_ch_ini):
+    def define_width_lines(self, gross):
         """Build width peaks related lines, just for plotting."""
-        n_pk = self.peaks_gro.size
+        if gross:
+            n_pk = self.peaks_gro.size
+        else:
+            n_pk = self.peaks_net.size
         if n_pk != 0:
-            self.xs_fwhm_lines = np.concatenate(np.stack(
-                (self.propts_gro['left_ips'], self.propts_gro['right_ips'],
-                 np.full(n_pk, None)), axis=1))
-            self.ys_fwhm_lines = np.concatenate(np.stack(
-                (self.propts_gro['width_heights'],
-                 self.propts_gro['width_heights'],
-                 np.full(n_pk, None)), axis=1))
-            self.xs_fwb_lines = np.concatenate(np.stack(
-                (fwhm_ch_ini, fwhm_ch_ini, np.full(n_pk, None)),
-                axis=1))
-            self.ys_fwb_lines = np.concatenate(np.stack(
-                (self.plateaux, self.plateaux, np.full(n_pk, None)), axis=1))
+            if gross:
+                self.xs_fwhm_lines_gro = np.concatenate(np.stack(
+                    (self.propts_gro['left_ips'], self.propts_gro['right_ips'],
+                     np.full(n_pk, None)), axis=1))
+                self.ys_fwhm_lines_gro = np.concatenate(np.stack(
+                    (self.propts_gro['width_heights'],
+                     self.propts_gro['width_heights'],
+                     np.full(n_pk, None)), axis=1))
+                self.xs_fwb_lines = np.concatenate(np.stack(
+                    (self.fwhm_ch_ini_gro, self.fwhm_ch_fin_gro, np.full(n_pk, None)),
+                    axis=1))
+                self.ys_fwb_lines = np.concatenate(np.stack(
+                    (self.plateaux, self.plateaux, np.full(n_pk, None)), axis=1))
+            else:
+                self.xs_fwhm_lines_net = np.concatenate(np.stack(
+                    (self.propts_net['left_ips'], self.propts_net['right_ips'],
+                     np.full(n_pk, None)), axis=1))
+                self.ys_fwhm_lines_net = np.concatenate(np.stack(
+                    (self.propts_net['width_heights'],
+                     self.propts_net['width_heights'],
+                     np.full(n_pk, None)), axis=1))
 
     def define_multiplets_regions(self, is_reg, k_sep_pk):
         """Define multiplet regions from already found peaks with proper widths."""

@@ -7,8 +7,8 @@ from src.genericcalib_class import ChannelEnergyCalib, EnergyFwhmCalib, EnergyEf
 from src.specchn_class import SpecChn
 from src.speciec_class import SpecIec
 from src.cntarraylike_class import CntArrayLike
-from src.peaksparms_class import PeaksParms
-
+# from src.peaksparms_class import PeaksParms
+from src.generic_series_analysis_class import GenericSeriesAnalysis
 
 class SpecParms:
     """Given spectrum parameters (count time, sample description etc)."""
@@ -24,7 +24,9 @@ class SpecParms:
         n_ch = self.spec_io.n_ch
 
         self.cnt_array_like = CntArrayLike(self.spec_io.sp_counts)
-        self.peaks_parms = PeaksParms()
+
+        # self.peaks_parms = PeaksParms()
+        self.ser_an = GenericSeriesAnalysis()
 
         #        self.channel_energy_calib = ChannelEnergyCalib(self.spec_io.en_ch_calib,
         #                                                       self.spec_io.chan_calib,
@@ -47,7 +49,7 @@ class SpecParms:
             self.energy_efficiency_calib = EnergyEfficiencyCalib(self.spec_io.en_ef_calib)
 
     #    def total_analysis(self, smoo, widths_range, k_sep_pk=5.0):
-    def total_analysis(self, k_sep_pk, smoo, widths_ranges):
+    def spe_analysis(self, k_sep_pk, smoo, widths_ranges):
         """
         Initialize a minimal members set from a read spectrum file.
 
@@ -82,44 +84,43 @@ class SpecParms:
             print('=================')
             print('Exec peaks_search(gross=True)')
             self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True)
-            print("self.peaks_parms.peaks_gro: ", self.peaks_parms.peaks_gro)
-            print("self.peaks_parms.propts_gro['widths']: ", self.peaks_parms.propts_gro['widths'])
-            print("self.peaks_parms.gross_widths = (ws_min, ws_max): ", self.peaks_parms.gross_widths)
+            # print("self.peaks_parms.peaks_gro: ", self.peaks_parms.peaks_gro)
+            # print("self.peaks_parms.propts_gro['widths']: ", self.peaks_parms.propts_gro['widths'])
+            # print("self.peaks_parms.gross_widths = (ws_min, ws_max): ", self.peaks_parms.gross_widths)
             print('=================')
-            print('Exec redefine_widths_range()')
-            self.peaks_parms.redefine_widths_range()
+            print('Exec redefine_widths_range(self.gross_widths)')
+            self.peaks_parms.redefine_widths_range(self.peaks_parms.gross_widths, gross=True)
             print('=================')
             print('Exec peaks_search(gross=True)')
             self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True,
                                           widths_range=self.peaks_parms.gross_widths)
-            print("self.peaks_parms.peaks_gro: ", self.peaks_parms.peaks_gro)
-            print("self.peaks_parms.propts_gro: ", self.peaks_parms.propts_gro)
-            print("self.peaks_parms.gross_widths = (ws_min, ws_max): ", self.peaks_parms.gross_widths)
+            # print("self.peaks_parms.peaks_gro: ", self.peaks_parms.peaks_gro)
+            # print("self.peaks_parms.propts_gro: ", self.peaks_parms.propts_gro)
+            # print("self.peaks_parms.gross_widths = (ws_min, ws_max): ", self.peaks_parms.gross_widths)
             print('=================')
-            self.peaks_parms.define_width_lines()
+            self.peaks_parms.define_width_lines(gross=True)
 
-            print(self.cnt_array_like.is_reg)
-            print(self.cnt_array_like.is_reg.size)
-            # print(k_sep_pk)
+            print(self.cnt_array_like.is_gro_reg)
+            print(self.cnt_array_like.is_gro_reg.size)
 
-            self.peaks_parms.define_multiplets_regions(self.cnt_array_like.is_reg,
+            self.peaks_parms.define_multiplets_regions(self.cnt_array_like.is_gro_reg,
                                                        k_sep_pk=k_sep_pk)
             self.cnt_array_like.calculate_base_line(self.peaks_parms.mix_regions, smoo)
 
             print('self.cnt_array_like.calculated_step_counts:')
-            for i in self.cnt_array_like.calculated_step_counts:
-                print(i)
-            print (len(self.cnt_array_like.calculated_step_counts))
+            # for i in self.cnt_array_like.calculated_step_counts:
+            #     print(i)
+            # print (len(self.cnt_array_like.calculated_step_counts))
 
             print('self.cnt_array_like.chans_in_multiplets_list:')
-            for i in self.cnt_array_like.chans_in_multiplets_list:
-                print(i)
-            print (len(self.cnt_array_like.chans_in_multiplets_list))
+            # for i in self.cnt_array_like.chans_in_multiplets_list:
+            #     print(i)
+            # print (len(self.cnt_array_like.chans_in_multiplets_list))
 
             self.cnt_array_like.united_step_baselines()
             print('united:')
-            print(self.cnt_array_like.plotsteps_x)
-            print(self.cnt_array_like.plotsteps_y)
+            # print(self.cnt_array_like.plotsteps_x)
+            # print(self.cnt_array_like.plotsteps_y)
 
             # 2022-set-27 Aqui começam os cálculos em cima do espectro líquido
             print('=================')
@@ -129,12 +130,21 @@ class SpecParms:
             print("self.peaks_parms.peaks_net: ", self.peaks_parms.peaks_net)
             print("self.peaks_parms.propts_net: ", self.peaks_parms.propts_net)
             print("self.peaks_parms.net_widths = (ws_min, ws_max): ", self.peaks_parms.net_widths)
-            print('================= PAREI AQUI')
-            # PRECISA DEIXAR define_width_lines() GENERICO PARA GROSS E NET
-            # self.peaks_parms.define_width_lines()
-            # self.peaks_parms.net_width_lines()
-            # self.peaks_parms.define_net_multiplets_regions(self.cnt_array_like.is_net_reg,
-            #                                                k_sep_pk=k_sep_pk)
+
+            print('=================')
+            self.peaks_parms.define_width_lines(gross=False)
+
+            print(self.cnt_array_like.is_net_reg)
+            print(self.cnt_array_like.is_net_reg.size)
+
+            self.peaks_parms.define_net_multiplets_regions(self.cnt_array_like.is_net_reg,
+                                                           k_sep_pk=k_sep_pk)
+
+            print('=================')
+            self.peaks_parms.define_width_lines(gross=False)
+            self.peaks_parms.net_width_lines()
+            self.peaks_parms.define_net_multiplets_regions(self.cnt_array_like.is_net_reg,
+                                                           k_sep_pk=k_sep_pk)
         else:
             print('No analysis applicable as spectrum is empty.')
         # print(vars(self.peaks_parms))

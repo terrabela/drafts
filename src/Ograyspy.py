@@ -73,10 +73,6 @@ if __name__ == '__main__':
     print(complete_spec_name)
     a_spec = Spec(complete_spec_name)
     a_spec.total_analysis()
-    # 2022-Jun-24 No momento esses são os que interessam:
-    # pann = a_spec.spec_parms
-    # cntarr = a_spec.spec_parms.cnt_array_like
-    # pkprms = a_spec.spec_parms.peaks_parms
     # 2022-Jun-14
     # (Pode pular e ir direto aos gráficos)
-    a_spec.plot_graphics(a_spec.spec_parms)
+    # a_spec.plot_graphics(a_spec.spec_parms)
