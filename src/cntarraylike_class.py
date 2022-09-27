@@ -43,6 +43,9 @@ class CntArrayLike:
         self.spl_baseline = np.array([])
         self.eval_baseline = np.array([])
 
+        self.plotsteps_x = []
+        self.plotsteps_y = []
+
         self.xs_bl_out_reg = np.array([])
         self.ys_bl_out_reg = np.array([])
         self.ws_bl_out_reg = np.array([])
@@ -133,11 +136,7 @@ class CntArrayLike:
             #    self.ys_all_steps.extend(list(a_step))
             #    self.ys_all_steps.append( None )
             self.net_spec[slice(*multiplet_region)] = np.where(net_mplet < 0.0, 0.0, net_mplet)
-        #    self.final_baseline = self.y0s - self.net_spec
-
-        # ELIMINAR:
-        # if len(_aux_list) != 0:
-        #     self.calculated_step_counts = np.concatenate(_aux_list)
+            self.final_baseline = self.y0s - self.net_spec
 
     def step_baseline(self, bl_in, bl_fi, y_s):
         """Calculate step baseline inside a region. Called just by calculate_base_line."""
@@ -152,19 +151,5 @@ class CntArrayLike:
 
     def united_step_baselines(self):
         """Build concatenated arrays of step baselines, just for plotting."""
-        self.plotsteps_x = [j for j in [[i, None] for i in self.chans_in_multiplets_list]
-        self.plotsteps_y = [[i, None] for i in self.calculated_step_counts]
-
-        if n_pk != 0:
-            self.xs_fwhm_lines = np.concatenate(np.stack(
-                (self.propts_gro['left_ips'], self.propts_gro['right_ips'],
-                 np.full(n_pk, None)), axis=1))
-            self.ys_fwhm_lines = np.concatenate(np.stack(
-                (self.propts_gro['width_heights'],
-                 self.propts_gro['width_heights'],
-                 np.full(n_pk, None)), axis=1))
-            self.xs_fwb_lines = np.concatenate(np.stack(
-                (self.fwhm_ch_ini, self.fwhm_ch_fin, np.full(n_pk, None)),
-                axis=1))
-            self.ys_fwb_lines = np.concatenate(np.stack(
-                (self.plateaux, self.plateaux, np.full(n_pk, None)), axis=1))
+        self.plotsteps_x = np.concatenate([np.append(i, None) for i in self.chans_in_multiplets_list])
+        self.plotsteps_y = np.concatenate([np.append(i, None) for i in self.calculated_step_counts])

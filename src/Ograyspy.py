@@ -79,4 +79,4 @@ if __name__ == '__main__':
     # pkprms = a_spec.spec_parms.peaks_parms
     # 2022-Jun-14
     # (Pode pular e ir direto aos gráficos)
-    # a_spec.plot_graphics(a_spec.spec_parms)
+    a_spec.plot_graphics(a_spec.spec_parms)

@@ -55,8 +55,8 @@ class PeaksParms:
                 rel_height=0.5)
 
             self.plateaux = self.propts_gro['peak_heights'] - self.propts_gro['prominences']
-            self.fwhm_ch_ini = np.ceil(self.propts_gro['left_ips']).astype(int)
-            self.fwhm_ch_fin = np.floor(self.propts_gro['right_ips']).astype(int)
+            fwhm_ch_ini = np.ceil(self.propts_gro['left_ips']).astype(int)
+            fwhm_ch_fin = np.floor(self.propts_gro['right_ips']).astype(int)
         else:
             if widths_range == (None, None):
                 widths_range = (n_ch * 0.0003, n_ch * 0.01)
@@ -68,6 +68,8 @@ class PeaksParms:
                 prominence=prominence,
                 width=widths_range,
                 rel_height=0.5)
+            fwhm_ch_ini = np.ceil(self.propts_gro['left_ips']).astype(int)
+            fwhm_ch_fin = np.floor(self.propts_gro['right_ips']).astype(int)
 
     def redefine_widths_range(self):
         """Redefine widths range."""
@@ -75,7 +77,7 @@ class PeaksParms:
         ws_max = np.percentile(self.propts_gro['widths'], 75) * 2.0
         self.gross_widths = (ws_min, ws_max)
 
-    def define_width_lines(self):
+    def define_width_lines(self, fwhm_ch_ini, fwhm_ch_ini):
         """Build width peaks related lines, just for plotting."""
         n_pk = self.peaks_gro.size
         if n_pk != 0:
@@ -87,7 +89,7 @@ class PeaksParms:
                  self.propts_gro['width_heights'],
                  np.full(n_pk, None)), axis=1))
             self.xs_fwb_lines = np.concatenate(np.stack(
-                (self.fwhm_ch_ini, self.fwhm_ch_fin, np.full(n_pk, None)),
+                (fwhm_ch_ini, fwhm_ch_ini, np.full(n_pk, None)),
                 axis=1))
             self.ys_fwb_lines = np.concatenate(np.stack(
                 (self.plateaux, self.plateaux, np.full(n_pk, None)), axis=1))

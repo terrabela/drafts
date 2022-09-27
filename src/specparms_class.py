@@ -116,7 +116,22 @@ class SpecParms:
                 print(i)
             print (len(self.cnt_array_like.chans_in_multiplets_list))
 
-            # self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.net_spec, gross=False)
+            self.cnt_array_like.united_step_baselines()
+            print('united:')
+            print(self.cnt_array_like.plotsteps_x)
+            print(self.cnt_array_like.plotsteps_y)
+
+            # 2022-set-27 Aqui começam os cálculos em cima do espectro líquido
+            print('=================')
+            print('Exec peaks_search(gross=False)')
+            self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.net_spec, gross=False,
+                                          widths_range=self.peaks_parms.net_widths)
+            print("self.peaks_parms.peaks_net: ", self.peaks_parms.peaks_net)
+            print("self.peaks_parms.propts_net: ", self.peaks_parms.propts_net)
+            print("self.peaks_parms.net_widths = (ws_min, ws_max): ", self.peaks_parms.net_widths)
+            print('================= PAREI AQUI')
+            # PRECISA DEIXAR define_width_lines() GENERICO PARA GROSS E NET
+            # self.peaks_parms.define_width_lines()
             # self.peaks_parms.net_width_lines()
             # self.peaks_parms.define_net_multiplets_regions(self.cnt_array_like.is_net_reg,
             #                                                k_sep_pk=k_sep_pk)
