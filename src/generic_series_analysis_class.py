@@ -5,7 +5,8 @@ from scipy.signal import find_peaks
 class GenericSeriesAnalysis:
     """Analyze a generic number series to find peaks, estimate their parameters and possibly find baseline."""
 
-    def __init__(self):
+    def __init__(self, counts_to_search):
+        self.cts = counts_to_search
         self.peaks = np.array([])
         self.pk_hei = np.array([])
         self.propts = {}
@@ -13,6 +14,7 @@ class GenericSeriesAnalysis:
         # self.width_heights_f = np.array([])
         # self.left_ips_f = np.array([])
         # self.right_ips_f = np.array([])
+        self.is_reg = np.array([])
 
         self.xs_fwhm_lines = np.array([])
         self.ys_fwhm_lines = np.array([])
@@ -21,16 +23,24 @@ class GenericSeriesAnalysis:
         self.mix_regions = np.array([])
         self.plateaux = np.array([])
 
-    def peaks_search(self, cts_to_search, peak_sd_fact=3.0, widths_range=(None, None)):
+    def resolve_peaks_and_regions(self, k_sep_pk):
+        self.peaks_search(self.cts, peak_sd_fact=3.0, widths_range=(None, None))
+        self.redefine_widths_range()
+        self.peaks_search(self.cts, peak_sd_fact=3.0, widths_range=self.widths_pair)
+        self.define_width_lines()
+        self.define_multiplets_regions(k_sep_pk)
+
+
+    def peaks_search(self, peak_sd_fact=3.0, widths_range=(None, None)):
         """Peaks search; use scipy.signal.find_peaks."""
-        n_ch = cts_to_search.size
-        height = peak_sd_fact * np.sqrt(cts_to_search)
-        prominence = peak_sd_fact * np.sqrt(cts_to_search)
+        n_ch = self.cts.size
+        height = peak_sd_fact * np.sqrt(self.cts)
+        prominence = peak_sd_fact * np.sqrt(self.cts)
         if widths_range == (None, None):
             widths_range = (n_ch * 0.0003, n_ch * 0.01)
         self.widths_range = widths_range
         self.peaks, self.propts = find_peaks(
-            cts_to_search,
+            self.cts,
             height=height,
             threshold=(None, None),
             prominence=prominence,
@@ -41,13 +51,13 @@ class GenericSeriesAnalysis:
         self.fwhm_ch_ini = np.ceil(self.propts['left_ips']).astype(int)
         self.fwhm_ch_fin = np.floor(self.propts['right_ips']).astype(int)
 
-    def redefine_widths_range(self, widths_pair):
+    def redefine_widths_range(self):
         """Redefine widths range."""
         ws_min = np.percentile(self.propts['widths'], 25) * 0.5
         ws_max = np.percentile(self.propts['widths'], 75) * 2.0
-        widths_pair = (ws_min, ws_max)
+        self.widths_pair = (ws_min, ws_max)
 
-    def define_width_lines(self, gross):
+    def define_width_lines(self):
         """Build width peaks related lines, just for plotting."""
         n_pk = self.peaks.size
         if n_pk != 0:
@@ -64,12 +74,12 @@ class GenericSeriesAnalysis:
             self.ys_fwb_lines = np.concatenate(np.stack(
                 (self.plateaux, self.plateaux, np.full(n_pk, None)), axis=1))
 
-    def define_multiplets_regions(self, is_reg, k_sep_pk):
+    def define_multiplets_regions(self, k_sep_pk):
         """Define multiplet regions from already found peaks with proper widths."""
         # k_sep_pk: Fator de fwhm para ampliar multipletos:
         # 2021-06-28
         # 2022-03-24 Vamos refatorar tudo:
-        n_ch = is_reg.size
+        n_ch = self.is_reg.size
         widths_extd = k_sep_pk * self.propts['widths']
         ini_extd = np.round(self.peaks - widths_extd).astype(int)
         fin_extd = np.round(self.peaks + widths_extd).astype(int)
@@ -77,11 +87,11 @@ class GenericSeriesAnalysis:
             for i_pk, ch_pk in enumerate(self.peaks):
                 for i_ch in range(ini_extd[i_pk], fin_extd[i_pk] + 1):
                     if (i_ch >= 0) & (i_ch < n_ch):
-                        is_reg[i_ch] = True
+                        self.is_reg[i_ch] = True
 
         comuta = np.zeros(n_ch)
         for i in range(1, n_ch):
-            comuta[i] = is_reg[i].astype(int) - is_reg[i - 1].astype(int)
+            comuta[i] = self.is_reg[i].astype(int) - self.is_reg[i - 1].astype(int)
 
         # np.nonzero gera uma tupla, não sei por quê.
         inis = np.nonzero(comuta > 0)[0]

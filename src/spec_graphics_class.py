@@ -10,12 +10,17 @@ import plotly.graph_objects as go
 
 
 class SpecGraphics():
-    def __init__(self, spec_parms):
-        self.parms = spec_parms
-
+    def __init__(self, spec_an):
+        self.spec_an = spec_an
         # self.promns = spec_parms.peaks_parms.propts_gro['prominences']
         # self.peaks_net = spec_parms.peaks_parms.peaks_net
         # self.pk_hei_net = spec_parms.peaks_parms.propts_net['peak_heights']
+
+    def plot_graphics(self):
+        """Plot graphics (?)."""
+        self.plot_figw1()
+        # self.spec_graphics = SpecGraphics(parms)
+        # self.spec_graphics.plot_simple_scattergl()
 
     def plot_figw1(self):
         # Initialize figure
@@ -24,7 +29,7 @@ class SpecGraphics():
         # Add Traces
 
         self.figw1.add_trace(
-            go.Scattergl(x=self.parms.cnt_array_like.chans_nzero,
+            go.Scattergl(x=self.spec_an. self.parms.cnt_array_like.chans_nzero,
                          y=self.parms.cnt_array_like.counts_nzero,
                          error_y=dict(
                              color='orange', width=3.0,
