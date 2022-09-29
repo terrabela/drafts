@@ -43,13 +43,12 @@ class Spec:
         #
         self.pkl_file = Path(self.f_name).with_suffix('.xz')
 
-        #
         n_ch = self.spec_io.n_ch
 
         self.cnt_array_like = CntArrayLike(self.spec_io.sp_counts)
 
         # self.peaks_parms = PeaksParms()
-        self.gross_spec_an = GenericSeriesAnalysis(self.spec_io.sp_counts)
+        self.gross_spec_an = GenericSeriesAnalysis(self.cnt_array_like.y0s)
         self.gross_spec_graph = SpecGraphics(self.gross_spec_an)
 
         #        self.channel_energy_calib = ChannelEnergyCalib(self.spec_io.en_ch_calib,
@@ -83,13 +82,6 @@ class Spec:
 
     def total_analysis(self, k_sep_pk=2.0, smoo=3000.0, widths_range=(4.0, 20.0)):
         """Analyze thoroughly a spectrum."""
-        # self.gro_parms.spe_analysis(k_sep_pk, smoo, widths_range)
-        # self.net_parms.spe_analysis(k_sep_pk, smoo, widths_range)
-        # AQUI mudando a abordagem, 2022-set-27
-        # self.parms.ser_an.peaks_search()spe_analysis(k_sep_pk, smoo, widths_range)
-
-        #    def total_analysis(self, smoo, widths_range, k_sep_pk=5.0):
-
         # Initialize a minimal members set from a read spectrum file.
 
         # :param k_sep_pk: Spectrum's complete file name.
@@ -107,10 +99,6 @@ class Spec:
         #    em define_multiplets_limits: define mix_regions (lims reg)
         #    calculate_base_line
         #    calculate_net_spec
-        #
-        #
-        #
-        #
 
         #        dá pobrema fazer em eval_smoo_cts
         #        self.peaks_parms.initial_peaks_search(self.cnt_array_like.n_ch,
@@ -123,37 +111,26 @@ class Spec:
             print('=================')
             print('Exec peaks_search(gross=True)')
 
-            # self.gross_spec_an.resolve_peaks_and_regions (
-            #     self.cnt_array_like.y0s,
-            #     k_sep_pk
-            # )
+            self.gross_spec_an.resolve_peaks_and_regions (
+                # self.cnt_array_like.y0s,
+                k_sep_pk
+            )
 
             # print("self.peaks_parms.peaks_gro: ", self.peaks_parms.peaks_gro)
             # print("self.peaks_parms.propts_gro['widths']: ", self.peaks_parms.propts_gro['widths'])
             # print("self.peaks_parms.gross_widths = (ws_min, ws_max): ", self.peaks_parms.gross_widths)
             print('=================')
             print('Exec redefine_widths_range(self.gross_widths)')
-            # self.ser_an.redefine_widths_range(self.peaks_parms.gross_widths, gross=True)
             print('=================')
             print('Exec peaks_search(gross=True)')
             print(vars(self.gross_spec_an))
-            # self.gross_spec_graph.plot_graphics(self.gross_spec_an)
-
-            # self.ser_an.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True,
-            #                          widths_range=self.peaks_parms.gross_widths)
             # print("self.peaks_parms.peaks_gro: ", self.peaks_parms.peaks_gro)
             # print("self.peaks_parms.propts_gro: ", self.peaks_parms.propts_gro)
             # print("self.peaks_parms.gross_widths = (ws_min, ws_max): ", self.peaks_parms.gross_widths)
             print('=================')
-            # self.ser_an.define_width_lines(gross=True)
 
             # print(self.cnt_array_like.is_gro_reg)
             # print(self.cnt_array_like.is_gro_reg.size)
-
-            # self.peaks_parms.define_multiplets_regions(self.cnt_array_like.is_gro_reg,
-            #                                            k_sep_pk=k_sep_pk)
-            # AQUI calculate_base_line não fica dentro de seires_analysis. Manter aqui.
-            # self.cnt_array_like.calculate_base_line(self.peaks_parms.mix_regions, smoo)
 
             # print('self.cnt_array_like.calculated_step_counts:')
             # for i in self.cnt_array_like.calculated_step_counts:
@@ -198,22 +175,8 @@ class Spec:
         # print(vars(self.peaks_parms))
 
 
-
     def perform_basic_net_area_calculation(self):
         """Perform a very rough net area calculation"""
         # self.spec_parms.peaks_parms.basic_net_area_calculation()
         # self.spec_parms.ser_an.peaks_search()
         pass
-
-    def chunks_from_file(self, chunksize=8192):
-        """ Read file chunks. """
-        file_chunks = []
-        with open(self, "rb") as f_file:
-            while True:
-                chunk = f_file.read(chunksize)
-                if chunk:
-                    yield chunk
-                    file_chunks.append(chunk)
-                else:
-                    break
-        return file_chunks

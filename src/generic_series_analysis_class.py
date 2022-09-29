@@ -24,12 +24,23 @@ class GenericSeriesAnalysis:
         self.plateaux = np.array([])
 
     def resolve_peaks_and_regions(self, k_sep_pk):
-        self.peaks_search(self.cts, peak_sd_fact=3.0, widths_range=(None, None))
+        self.peaks_search(self.cts, widths_range=(None, None))
         self.redefine_widths_range()
-        self.peaks_search(self.cts, peak_sd_fact=3.0, widths_range=self.widths_pair)
+        self.peaks_search(self.cts, widths_range=self.widths_pair)
         self.define_width_lines()
         self.define_multiplets_regions(k_sep_pk)
 
+        # self.ser_an.redefine_widths_range(self.peaks_parms.gross_widths, gross=True)
+        # self.gross_spec_graph.plot_graphics(self.gross_spec_an)
+
+        # self.ser_an.peaks_search(cts_to_search=self.cnt_array_like.y0s, gross=True,
+        #                          widths_range=self.peaks_parms.gross_widths)
+
+        # self.ser_an.define_width_lines(gross=True)
+        # self.peaks_parms.define_multiplets_regions(self.cnt_array_like.is_gro_reg,
+        #                                            k_sep_pk=k_sep_pk)
+        # AQUI calculate_base_line não fica dentro de seires_analysis. Manter aqui.
+        # self.cnt_array_like.calculate_base_line(self.peaks_parms.mix_regions, smoo)
 
     def peaks_search(self, peak_sd_fact=3.0, widths_range=(None, None)):
         """Peaks search; use scipy.signal.find_peaks."""
