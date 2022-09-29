@@ -10,66 +10,108 @@ import plotly.graph_objects as go
 
 
 class SpecGraphics():
-    def __init__(self, spec_an):
-        self.spec_an = spec_an
-        # self.promns = spec_parms.peaks_parms.propts_gro['prominences']
-        # self.peaks_net = spec_parms.peaks_parms.peaks_net
-        # self.pk_hei_net = spec_parms.peaks_parms.propts_net['peak_heights']
+    def __init__(self, f_name, spec_an):
+        pass
+        # self.promns = spec_an.propts['prominences']
+        # self.peaks = spec_an.peaks
+        # self.pk_hei = spec_an.propts['peak_heights']
 
-    def plot_graphics(self):
-        """Plot graphics (?)."""
-        self.plot_figw1()
-        # self.spec_graphics = SpecGraphics(parms)
-        # self.spec_graphics.plot_simple_scattergl()
 
-    def plot_figw1(self):
+class GrossCountsGraphic(SpecGraphics):
+    def __init__(self, f_name, spec_an):
+        super().__init__(f_name, spec_an)
+        self.f_name = f_name
+        self.chans_nzero = spec_an.cnt_arrs.chans_nzero
+        self.counts_nzero = spec_an.cnt_arrs.counts_nzero
+        self.unc_y_4plot = spec_an.cnt_arrs.unc_y_4plot
+        # self.x_s = spec_an.cnt_arrs.x_s
+        # self.y_s = spec_an.cnt_arrs.y_s
         # Initialize figure
         self.figw1 = go.FigureWidget();
+
+    def plot_figw1(self, spec_an, graph_name):
 
         # Add Traces
 
         self.figw1.add_trace(
-            go.Scattergl(x=self.spec_an. self.parms.cnt_array_like.chans_nzero,
-                         y=self.parms.cnt_array_like.counts_nzero,
+            go.Scattergl(x=self.chans_nzero,
+                         y=self.counts_nzero,
                          error_y=dict(
                              color='orange', width=3.0,
                              type='data',  # value of error bar given in data coordinates
-                             array=self.parms.cnt_array_like.unc_y_4plot,
+                             array=self.unc_y_4plot,
+                             visible=True),
+                         name="Counts & uncertaintes",
+                         line=dict(color='orange', width=0.7)));
+        self.figw1.add_trace(
+            go.Scattergl(x=spec_an.cnt_arrs.x_s,
+                         y=spec_an.cnt_arrs.new_y_s,
+                         name='y_s, eventually smoothed',
+                         line=dict(color='navy', width=0.4)))
+
+        # Set title and scale type
+        self.figw1.update_layout(title_text='Fig 1: ' + self.f_name)
+        self.figw1.update_yaxes(type="log")
+        self.figw1.write_html(graph_name + '.html', auto_open=True)
+
+
+class PeaksAndRegionsGraphic(SpecGraphics):
+    def __init__(self, f_name, spec_an):
+        super().__init__(f_name, spec_an)
+        self.f_name = f_name
+        self.chans_nzero = spec_an.cnt_arrs.chans_nzero
+        self.counts_nzero = spec_an.cnt_arrs.counts_nzero
+        self.unc_y_4plot = spec_an.cnt_arrs.unc_y_4plot
+        self.x_s = spec_an.cnt_arrs.x_s
+        # Initialize figure
+        self.pk_parms = spec_an.pk_parms
+        self.propts = self.pk_parms.propts
+        self.fig_widths = go.FigureWidget();
+
+    def define_width_lines(self):
+        """Build width peaks related lines, just for plotting."""
+        n_pk = self.pk_parms.size
+        if n_pk != 0:
+            self.xs_fwhm_lines = np.concatenate(np.stack(
+                (self.propts['left_ips'], self.propts['right_ips'],
+                 np.full(n_pk, None)), axis=1))
+            self.ys_fwhm_lines = np.concatenate(np.stack(
+                (self.propts['width_heights'],
+                 self.propts['width_heights'],
+                 np.full(n_pk, None)), axis=1))
+            self.xs_fwb_lines = np.concatenate(np.stack(
+                (self.fwhm_ch_ini, self.fwhm_ch_fin, np.full(n_pk, None)),
+                axis=1))
+            self.ys_fwb_lines = np.concatenate(np.stack(
+                (self.plateaux, self.plateaux, np.full(n_pk, None)), axis=1))
+
+
+    def plot_figw2(self, spec_an, graph_name):
+
+        self.fig_widths.add_trace(
+            go.Scattergl(x=self.chans_nzero,
+                         y=self.counts_nzero,
+                         error_y=dict(
+                             color='orange', width=3.0,
+                             type='data',  # value of error bar given in data coordinates
+                             array=self.unc_y_4plot,
                              visible=True),
                          name="Counts & uncertaintes",
                          line=dict(color='orange', width=0.7)));
 
-        # Set title and scale type
-        # self.figw1.update_layout(title_text='Fig 1: ')  # + f_name)
-        # self.figw1.update_yaxes(type="log");
-
-        # AQUI: não precisa abrir página web nova.
-        # self.figw1.write_html('figw1.html', auto_open=True)
-
-    def plot_figw2(self):
-
-        # graphic #2
-        self.fig_widths = go.FigureWidget(self.figw1);
-
         self.fig_widths.add_trace(
-            go.Scattergl(x=self.parms.cnt_array_like.chans,
-                         y=self.parms.cnt_array_like.eval_smoo_cts,
-                         name='Smoothed',
-                         line=dict(color='navy', width=0.4)))
-
-        self.fig_widths.add_trace(
-            go.Scattergl(x=self.parms.peaks_parms.xs_fwhm_lines,
-                         y=self.parms.peaks_parms.ys_fwhm_lines,
+            go.Scattergl(x=self.pk_parms.xs_fwhm_lines,
+                         y=self.pk_parms.ys_fwhm_lines,
                          name='FWHMs',
                          line=dict(color='blue', width=3.0)));
         self.fig_widths.add_trace(
-            go.Scattergl(x=self.parms.peaks_parms.xs_fwb_lines,
-                         y=self.parms.peaks_parms.ys_fwb_lines,
+            go.Scattergl(x=self.pk_parms.xs_fwb_lines,
+                         y=self.pk_parms.ys_fwb_lines,
                          name='FW at base',
                          line=dict(color='magenta', width=3.0)));
         self.fig_widths.add_trace(
-            go.Scattergl(x=self.parms.peaks_parms.peaks_gro,
-                         y=self.parms.peaks_parms.propts_gro['peak_heights'],
+            go.Scattergl(x=self.pk_parms.peaks,
+                         y=self.pk_parms.propts['peak_heights'],
                          name = 'peak_heights',
                          marker = dict(color='yellow',
                                        symbol='circle',
@@ -81,155 +123,10 @@ class SpecGraphics():
         # Set title and scale type
         self.fig_widths.update_layout(title_text="Fig 2: Peaks widths")
         self.fig_widths.update_yaxes(type='log');
-        self.fig_widths.write_html('fig_widths.html', auto_open=True)
+        self.fig_widths.write_html(graph_name + '.html', auto_open=True)
 
-    def plot_figw3(self):
-        # graphic #3
+    def united_step_baselines(self):
+        """Build concatenated arrays of step baselines, just for plotting."""
+        self.plotsteps_x = np.concatenate([np.append(i, None) for i in self.chans_in_multiplets_list])
+        self.plotsteps_y = np.concatenate([np.append(i, None) for i in self.calculated_step_counts])
 
-        self.fig_is_reg = go.FigureWidget(self.figw1);
-
-        self.fig_is_reg.add_trace(
-            go.Scattergl(x=self.parms.cnt_array_like.chans_in_regs(),
-                         y=self.parms.cnt_array_like.counts_in_regs(),
-                         name='Counts in regions',
-                         mode='markers',
-                         marker=dict(
-                             color='LightSkyBlue',
-                             size=6,
-                             line=dict(color='MediumPurple', width=3)
-                         )));
-        self.fig_is_reg.add_trace(
-            go.Scattergl(x=self.parms.cnt_array_like.chans_outof_regs(),
-                         y=self.parms.cnt_array_like.counts_outof_regs(),
-                         name='Counts out of regions',
-                         mode='markers',
-                         marker=dict(
-                             color='Pink',
-                             size=5,
-                             line=dict(color='LightGreen', width=2)
-                         )));
-
-        # Set title and scale type
-        self.fig_is_reg.update_layout(title_text="Fig 3: Definition of regions")
-        self.fig_is_reg.update_yaxes(type='log');
-        self.fig_is_reg.write_html('fig_is_reg.html', auto_open=True)
-
-    def plot_figw4(self):
-        # Initialize another figure
-        self.figw4 = go.FigureWidget(self.figw1);
-
-        # Add Traces
-
-        self.figw4.add_trace(
-            go.Scattergl(x=self.parms.cnt_array_like.chans,
-                         y=self.parms.cnt_array_like.final_baseline,
-                         name='final_baseline',
-                         line=dict(color='gray', width=0.3)));
-
-        self.figw4.add_trace(
-            go.Scattergl(x=self.parms.cnt_array_like.plotsteps_x,
-                         y=self.parms.cnt_array_like.plotsteps_y,
-                         name='calculated_step_counts',
-                         line=dict(color='red', width=1.3)));
-
-        self.figw4.add_trace(
-            go.Scattergl(x=self.parms.peaks_parms.peaks_gro,
-                         y=self.parms.peaks_parms.propts_gro['peak_heights'],
-                         name = 'peak_heights',
-                         marker = dict(color='yellow',
-                                       symbol='circle',
-                                       size=10,
-                                       opacity=0.8,
-                                       line=dict(color='green', width=2.0)
-                                       ),
-                         mode = 'markers'));
-        # Set title and scale type
-        self.figw4.update_layout(title_text='Fig 4: Base line')
-        self.figw4.update_yaxes(type='log');
-        self.figw4.write_html('figw4.html', auto_open=True)
-
-    def plot_figw5(self):
-
-        # graphic #5
-
-        self.fig_steps = go.FigureWidget();
-        self.fig_steps.add_trace(
-            go.Scattergl(x=self.chans[self.nzero & self.is_reg],
-                         y=self.counts[self.nzero & self.is_reg],
-                         name='Counts in regions',
-                         line=dict(color='navy', width=0.3),
-                         mode='markers'));
-        self.fig_steps.add_trace(
-            go.Scattergl(x=self.chans[self.nzero & ~self.is_reg],
-                         y=self.counts[self.nzero & ~self.is_reg],
-                         name='Counts out of regions',
-                         line=dict(color='orange', width=0.3),
-                         mode='markers'));
-        self.fig_steps.add_trace(
-            go.Scattergl(x=self.xs_all_mplets,
-                         y=self.ys_all_steps,
-                         name='ys_all_steps',
-                         line=dict(color='brown', width=1.5)));
-        self.fig_steps.add_trace(
-            go.Scattergl(x=self.xs_all_mplets,
-                         y=self.ys_all_mplets,
-                         name='ys_all_mplets',
-                         line=dict(color='green', width=3.0)));
-        self.fig_steps.add_trace(
-            go.Scattergl(x=self.chans,
-                         y=self.final_baseline,
-                         name='final_baseline',
-                         line=dict(color='magenta', width=0.7)));
-        self.fig_steps.add_trace(
-            go.Scattergl(x=self.peaks_gro,
-                         y=self.pk_hei_gro,
-                         name='peak_heights',
-                         marker=dict(color='yellow',
-                                     symbol='circle',
-                                     size=10,
-                                     opacity=0.8,
-                                     line=dict(color='magenta', width=2.0)
-                                     ),
-                         mode='markers',
-                         line=dict(color='green', width=3.0)));
-        # Set title and scale type
-        self.fig_steps.update_layout(title_text='Fig 5: fig_steps')
-        self.fig_steps.update_yaxes(type='log');
-        self.fig_steps.write_html('fig_steps.html', auto_open=True)
-
-    def plot_figw6(self):
-
-    # graphic #6
-
-        self.figw6 = go.FigureWidget();
-
-        self.figw6.add_trace(
-            go.Scattergl(x=self.parms.cnt_array_like.chans,
-                         y=self.parms.cnt_array_like.net_spec,
-                         name='net_spec',
-                         line=dict(color='magenta', width=0.7)));
-
-        self.figw6.add_trace(
-            go.Scattergl(x=self.parms.peaks_parms.peaks_net,
-                         y=self.parms.peaks_parms.propts_net['peak_heights'],
-                         name='peak_heights',
-                         marker=dict(color='orange',
-                                     symbol='circle',
-                                     size=10,
-                                     opacity=0.8,
-                                     line=dict(color='blue', width=2.0)
-                                     ),
-                         mode='markers'));
-        # Set title and scale type
-        self.figw6.update_layout(title_text='Fig 6: net spec analysis')
-        # self.figw6.update_yaxes(type='log');
-        self.figw6.write_html('figw6.html', auto_open=True)
-
-    def plot_simple_scattergl(self, chans_nzero=None, counts_nzero=None, unc_y=None, f_name=None):
-
-        self.plot_figw1() # estarah contido em figw2 e figw4
-        # self.plot_figw2()
-        # self.plot_figw3()
-        self.plot_figw4()
-        # self.plot_figw5()
-        self.plot_figw6()

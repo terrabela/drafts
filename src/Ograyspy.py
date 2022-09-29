@@ -6,7 +6,8 @@ from src.dir_listing import DirectoryList
 from pathlib import Path
 import pickle
 import os
-from spec_class import Spec
+from src.spec_class import Spec
+from src.spec_graphics_class import GrossCountsGraphic, PeaksAndRegionsGraphic
 
 
 class Ograyspy:
@@ -72,7 +73,21 @@ if __name__ == '__main__':
         complete_spec_name = str(my_ogra.spectra_path) + '/' + a_spec_name
     print(complete_spec_name)
     a_spec = Spec(complete_spec_name)
+
+    gross_counts_graphics = GrossCountsGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
+    # gross_counts_graphics.plot_figw1(a_spec.gross_spec_ser_an, 'cont_bruta_origi')
+
+    smoothed_graph = GrossCountsGraphic(complete_spec_name, a_spec.smoo_gross_ser_an)
+    # smoothed_graph.plot_figw1(a_spec.smoo_gross_ser_an, 'cont_bruta_suavi')
+
     a_spec.total_analysis()
-    # 2022-Jun-14
-    # (Pode pular e ir direto aos gráficos)
-    # a_spec.plot_graphics(a_spec.spec_parms)
+    print('Fez total analysis')
+
+    print('Ver se printa pk_parms:')
+    pks_regions_gros = PeaksAndRegionsGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
+    print(vars(a_spec.gross_spec_ser_an.pk_parms))
+    # pks_regions_gros.plot_figw2(a_spec.gross_spec_ser_an, 'origi_bruta_larguras')
+
+
+    # a_graph.plot_graphics()
+    # End of main program.

@@ -13,13 +13,10 @@ class PeaksParms:
     """Peaks set parameters (heights, widths etc)."""
 
     def __init__(self):
-        self.peaks_gro = np.array([])
-        self.peaks_net = np.array([])
-        self.pk_hei_gro = np.array([])
-        self.propts_gro = {}
-        self.propts_net = {}
-        self.gross_widths = (None, None)
-        self.net_widths = (None, None)
+        self.peaks = np.array([])
+        self.pk_hei = np.array([])
+        self.propts = {}
+        self.widths = (None, None)
         # self.width_heights_f = np.array([])
         # self.left_ips_f = np.array([])
         # self.right_ips_f = np.array([])

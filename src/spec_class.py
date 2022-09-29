@@ -14,9 +14,9 @@ import numpy as np
 from src.genericcalib_class import ChannelEnergyCalib, EnergyFwhmCalib, EnergyEfficiencyCalib
 from src.specchn_class import SpecChn
 from src.speciec_class import SpecIec
-from src.cntarraylike_class import CntArrayLike
+# from src.cntarraylike_class import CntArrayLike
+from src.counts_series_arrays import CountsSeriesArrays
 from src.generic_series_analysis_class import GenericSeriesAnalysis
-from src.spec_graphics_class import SpecGraphics
 
 
 class Spec:
@@ -45,12 +45,13 @@ class Spec:
 
         n_ch = self.spec_io.n_ch
 
-        self.cnt_array_like = CntArrayLike(self.spec_io.sp_counts)
-
-        # self.peaks_parms = PeaksParms()
-        self.gross_spec_an = GenericSeriesAnalysis(self.cnt_array_like.y0s)
-        self.gross_spec_graph = SpecGraphics(self.gross_spec_an)
-
+        self.gross_spec_ser_an = GenericSeriesAnalysis(
+            CountsSeriesArrays(self.spec_io.sp_counts, to_smooth=False)
+        )
+        self.smoo_gross_ser_an = GenericSeriesAnalysis(
+            CountsSeriesArrays(self.spec_io.sp_counts, to_smooth=True)
+        )
+        #
         #        self.channel_energy_calib = ChannelEnergyCalib(self.spec_io.en_ch_calib,
         #                                                       self.spec_io.chan_calib,
         #                                                       self.spec_io.coeffs_ch_en)
@@ -70,6 +71,9 @@ class Spec:
             pass
         else:
             self.energy_efficiency_calib = EnergyEfficiencyCalib(self.spec_io.en_ef_calib)
+
+        # print(vars(self))
+        print(vars(self.gross_spec_ser_an.cnt_arrs))
 
 
     @staticmethod
@@ -100,52 +104,17 @@ class Spec:
         #    calculate_base_line
         #    calculate_net_spec
 
-        #        dá pobrema fazer em eval_smoo_cts
-        #        self.peaks_parms.initial_peaks_search(self.cnt_array_like.n_ch,
-        #                                              self.cnt_array_like.eval_smoo_cts)
-
-        if self.cnt_array_like.n_ch > 0:
+        if self.gross_spec_ser_an.cnt_arrs.n_ch > 0:
             print('k_sep_pk: ', k_sep_pk)
             print('smoo: ', smoo)
             print('widths_range: ', widths_range)
             print('=================')
             print('Exec peaks_search(gross=True)')
 
-            self.gross_spec_an.resolve_peaks_and_regions (
+            self.gross_spec_ser_an.resolve_peaks_and_regions (
                 # self.cnt_array_like.y0s,
                 k_sep_pk
             )
-
-            # print("self.peaks_parms.peaks_gro: ", self.peaks_parms.peaks_gro)
-            # print("self.peaks_parms.propts_gro['widths']: ", self.peaks_parms.propts_gro['widths'])
-            # print("self.peaks_parms.gross_widths = (ws_min, ws_max): ", self.peaks_parms.gross_widths)
-            print('=================')
-            print('Exec redefine_widths_range(self.gross_widths)')
-            print('=================')
-            print('Exec peaks_search(gross=True)')
-            print(vars(self.gross_spec_an))
-            # print("self.peaks_parms.peaks_gro: ", self.peaks_parms.peaks_gro)
-            # print("self.peaks_parms.propts_gro: ", self.peaks_parms.propts_gro)
-            # print("self.peaks_parms.gross_widths = (ws_min, ws_max): ", self.peaks_parms.gross_widths)
-            print('=================')
-
-            # print(self.cnt_array_like.is_gro_reg)
-            # print(self.cnt_array_like.is_gro_reg.size)
-
-            # print('self.cnt_array_like.calculated_step_counts:')
-            # for i in self.cnt_array_like.calculated_step_counts:
-            #     print(i)
-            # print (len(self.cnt_array_like.calculated_step_counts))
-
-            # print('self.cnt_array_like.chans_in_multiplets_list:')
-            # for i in self.cnt_array_like.chans_in_multiplets_list:
-            #     print(i)
-            # print (len(self.cnt_array_like.chans_in_multiplets_list))
-
-            # self.cnt_array_like.united_step_baselines()
-            # print('united:')
-            # print(self.cnt_array_like.plotsteps_x)
-            # print(self.cnt_array_like.plotsteps_y)
 
             # 2022-set-27 Aqui começam os cálculos em cima do espectro líquido
             # print('=================')
