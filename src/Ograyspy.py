@@ -75,10 +75,10 @@ if __name__ == '__main__':
     a_spec = Spec(complete_spec_name)
 
     gross_counts_graphics = GrossCountsGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
-    # gross_counts_graphics.plot_figw1(a_spec.gross_spec_ser_an, 'cont_bruta_origi')
+    gross_counts_graphics.plot_figw1(a_spec.gross_spec_ser_an, 'cont_bruta_origi')
 
     smoothed_graph = GrossCountsGraphic(complete_spec_name, a_spec.smoo_gross_ser_an)
-    # smoothed_graph.plot_figw1(a_spec.smoo_gross_ser_an, 'cont_bruta_suavi')
+    smoothed_graph.plot_figw1(a_spec.smoo_gross_ser_an, 'cont_bruta_suavi')
 
     a_spec.total_analysis()
     print('Fez total analysis')
