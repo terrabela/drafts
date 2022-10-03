@@ -94,7 +94,7 @@ class Spec:
         # :return: 0 if spectrum was successfully opened; -1 otherwise.
         # :rtype: int
 
-        # sequência:
+        # seqquência:
         #    incia obj spec_parms
         #    initial_peaks_search: acha picos candidatos, põe em peaks_parms.peaks
         #    define_multiplets_regions:
