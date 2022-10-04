@@ -6,6 +6,7 @@ Created on Tue Nov 30 12:54:36 2021
 @author: maduar
 """
 
+import numpy as np
 import plotly.graph_objects as go
 
 
@@ -24,15 +25,10 @@ class GrossCountsGraphic(SpecGraphics):
         self.chans_nzero = spec_an.cnt_arrs.chans_nzero
         self.counts_nzero = spec_an.cnt_arrs.counts_nzero
         self.unc_y_4plot = spec_an.cnt_arrs.unc_y_4plot
-        # self.x_s = spec_an.cnt_arrs.x_s
-        # self.y_s = spec_an.cnt_arrs.y_s
         # Initialize figure
         self.figw1 = go.FigureWidget();
 
     def plot_figw1(self, spec_an, graph_name):
-
-        # Add Traces
-
         self.figw1.add_trace(
             go.Scattergl(x=self.chans_nzero,
                          y=self.counts_nzero,
@@ -70,24 +66,24 @@ class PeaksAndRegionsGraphic(SpecGraphics):
 
     def define_width_lines(self):
         """Build width peaks related lines, just for plotting."""
-        n_pk = self.pk_parms.size
+        n_pk = self.pk_parms.peaks.size
         if n_pk != 0:
-            self.xs_fwhm_lines = np.concatenate(np.stack(
+            self.pk_parms.xs_fwhm_lines = np.concatenate(np.stack(
                 (self.propts['left_ips'], self.propts['right_ips'],
                  np.full(n_pk, None)), axis=1))
-            self.ys_fwhm_lines = np.concatenate(np.stack(
+            self.pk_parms.ys_fwhm_lines = np.concatenate(np.stack(
                 (self.propts['width_heights'],
                  self.propts['width_heights'],
                  np.full(n_pk, None)), axis=1))
-            self.xs_fwb_lines = np.concatenate(np.stack(
-                (self.fwhm_ch_ini, self.fwhm_ch_fin, np.full(n_pk, None)),
+            self.pk_parms.xs_fwb_lines = np.concatenate(np.stack(
+                (self.pk_parms.fwhm_ch_ini, self.pk_parms.fwhm_ch_fin, np.full(n_pk, None)),
                 axis=1))
-            self.ys_fwb_lines = np.concatenate(np.stack(
-                (self.plateaux, self.plateaux, np.full(n_pk, None)), axis=1))
+            self.pk_parms.ys_fwb_lines = np.concatenate(np.stack(
+                (self.pk_parms.fwhm_plateaux, self.pk_parms.fwhm_plateaux, np.full(n_pk, None)), axis=1))
 
 
     def plot_figw2(self, spec_an, graph_name):
-
+        self.define_width_lines()
         self.fig_widths.add_trace(
             go.Scattergl(x=self.chans_nzero,
                          y=self.counts_nzero,
@@ -129,4 +125,3 @@ class PeaksAndRegionsGraphic(SpecGraphics):
         """Build concatenated arrays of step baselines, just for plotting."""
         self.plotsteps_x = np.concatenate([np.append(i, None) for i in self.chans_in_multiplets_list])
         self.plotsteps_y = np.concatenate([np.append(i, None) for i in self.calculated_step_counts])
-

@@ -31,44 +31,6 @@ class PeaksParms:
         self.plateaux = np.array([])
 
 
-    #    def initial_peaks_search(self, n_ch, cts_to_search, peaks_to_set, propts_to_set,
-    #                             peak_sd_fact=3.0, widths_range=(None, None),
-    #                             areas_calc='under_fwhm',
-    #                             set_plateaux=False):
-    def peaks_search(self, cts_to_search, gross=False, peak_sd_fact=3.0, widths_range=(None, None)):
-        """Peaks search; use scipy.signal.find_peaks."""
-        n_ch = cts_to_search.size
-        height = peak_sd_fact * np.sqrt(cts_to_search)
-        prominence = peak_sd_fact * np.sqrt(cts_to_search)
-        if gross:
-            if widths_range == (None, None):
-                widths_range = (n_ch * 0.0003, n_ch * 0.01)
-            self.widths_range_gro = widths_range
-            self.peaks_gro, self.propts_gro = find_peaks(
-                cts_to_search,
-                height=height,
-                threshold=(None, None),
-                prominence=prominence,
-                width=widths_range,
-                rel_height=0.5)
-
-            self.plateaux = self.propts_gro['peak_heights'] - self.propts_gro['prominences']
-            self.fwhm_ch_ini_gro = np.ceil(self.propts_gro['left_ips']).astype(int)
-            self.fwhm_ch_fin_gro = np.floor(self.propts_gro['right_ips']).astype(int)
-        else:
-            if widths_range == (None, None):
-                widths_range = (n_ch * 0.0003, n_ch * 0.01)
-            self.widths_range_net = widths_range
-            self.peaks_net, self.propts_net = find_peaks(
-                cts_to_search,
-                height=height,
-                threshold=(None, None),
-                prominence=prominence,
-                width=widths_range,
-                rel_height=0.5)
-            self.fwhm_ch_ini_net = np.ceil(self.propts_gro['left_ips']).astype(int)
-            self.fwhm_ch_fin_net = np.floor(self.propts_gro['right_ips']).astype(int)
-
     def redefine_widths_range(self, widths_pair, gross):
         """Redefine widths range."""
         ws_min = np.percentile(self.propts_gro['widths'], 25) * 0.5

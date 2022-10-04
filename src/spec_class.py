@@ -97,27 +97,27 @@ class Spec:
         # seqquência:
         #    incia obj spec_parms
         #    initial_peaks_search: acha picos candidatos, põe em peaks_parms.peaks
-        #    define_multiplets_regions:
-        #       em init do cnt_array_like, define eval_smoo_cts
-        #       em define_multiplets_regions: define is_reg com base em bons picos
-        #    em define_multiplets_limits: define mix_regions (lims reg)
-        #    calculate_base_line
-        #    calculate_net_spec
 
         if self.gross_spec_ser_an.cnt_arrs.n_ch > 0:
             print('k_sep_pk: ', k_sep_pk)
             print('smoo: ', smoo)
             print('widths_range: ', widths_range)
             print('=================')
-            print('Exec peaks_search(gross=True)')
+            print('Exec peaks_search(gross=True), espectro ORIGINAL')
+            self.gross_spec_ser_an.resolve_peaks_and_regions (k_sep_pk)
+            # 2022-out-4: Aqui faço a busca no suavizado, mas deixarei sem uso por enquanto
+            print('Exec peaks_search(gross=True), espectro SMOOTHED')
+            self.smoo_gross_ser_an.resolve_peaks_and_regions (k_sep_pk)
+            #    define_multiplets_regions:
+            ##      em define_multiplets_regions: define is_reg com base em bons picos
+            self.gross_spec_ser_an.define_multiplets_regions(k_sep_pk)
 
-            self.gross_spec_ser_an.resolve_peaks_and_regions (
-                # self.cnt_array_like.y0s,
-                k_sep_pk
-            )
+            #    em define_multiplets_limits: define mix_regions (lims reg)
+            #    calculate_base_line
+            #    calculate_net_spec
 
             # 2022-set-27 Aqui começam os cálculos em cima do espectro líquido
-            # print('=================')
+            print('=================')
             # print('Exec peaks_search(gross=False)')
             # self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.net_spec, gross=False,
             #                               widths_range=self.peaks_parms.net_widths)
