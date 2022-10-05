@@ -104,12 +104,13 @@ class Spec:
             print('widths_range: ', widths_range)
             print('=================')
             print('Exec peaks_search(gross=True), espectro ORIGINAL')
-            self.gross_spec_ser_an.resolve_peaks_and_regions (k_sep_pk)
+            self.gross_spec_ser_an.resolve_peaks_and_regions (k_sep_pk, smoo)
             # 2022-out-4: Aqui faço a busca no suavizado, mas deixarei sem uso por enquanto
             print('Exec peaks_search(gross=True), espectro SMOOTHED')
-            self.smoo_gross_ser_an.resolve_peaks_and_regions (k_sep_pk)
+            self.smoo_gross_ser_an.resolve_peaks_and_regions (k_sep_pk, smoo)
             #    define_multiplets_regions:
             ##      em define_multiplets_regions: define is_reg com base em bons picos
+            # 2022-out-5: Definindo multipletos no original spec (não no smoo)
             self.gross_spec_ser_an.define_multiplets_regions(k_sep_pk)
 
             #    em define_multiplets_limits: define mix_regions (lims reg)

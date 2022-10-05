@@ -7,7 +7,7 @@ from pathlib import Path
 import pickle
 import os
 from src.spec_class import Spec
-from src.spec_graphics_class import GrossCountsGraphic, PeaksAndRegionsGraphic
+from src.spec_graphics_class import GrossCountsGraphic, PeaksAndRegionsGraphic, BaselineGraphic
 
 
 class Ograyspy:
@@ -88,6 +88,9 @@ if __name__ == '__main__':
 
     pks_regions_smoo = PeaksAndRegionsGraphic(complete_spec_name, a_spec.smoo_gross_ser_an)
     pks_regions_smoo.plot_figw2(a_spec.smoo_gross_ser_an, 'suavi_bruta_larguras')
+
+    baseline_graph = BaselineGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
+    baseline_graph.plot_figbl(a_spec.gross_spec_ser_an, 'Linha_base_espectro_original')
 
     # a_graph.plot_graphics()
     # End of main program.
