@@ -48,9 +48,12 @@ class Spec:
         self.gross_spec_ser_an = GenericSeriesAnalysis(
             CountsSeriesArrays(self.spec_io.sp_counts, to_smooth=False)
         )
-        self.smoo_gross_ser_an = GenericSeriesAnalysis(
-            CountsSeriesArrays(self.spec_io.sp_counts, to_smooth=True)
-        )
+
+        # 2022-out-6
+        # AQUI: vou desativar o smoo por enquanto
+        # self.smoo_gross_ser_an = GenericSeriesAnalysis(
+        #     CountsSeriesArrays(self.spec_io.sp_counts, to_smooth=True)
+        # )
         #
         #        self.channel_energy_calib = ChannelEnergyCalib(self.spec_io.en_ch_calib,
         #                                                       self.spec_io.chan_calib,
@@ -106,8 +109,8 @@ class Spec:
             print('Exec peaks_search(gross=True), espectro ORIGINAL')
             self.gross_spec_ser_an.resolve_peaks_and_regions (k_sep_pk, smoo)
             # 2022-out-4: Aqui faço a busca no suavizado, mas deixarei sem uso por enquanto
-            print('Exec peaks_search(gross=True), espectro SMOOTHED')
-            self.smoo_gross_ser_an.resolve_peaks_and_regions (k_sep_pk, smoo)
+            # print('Exec peaks_search(gross=True), espectro SMOOTHED')
+            # self.smoo_gross_ser_an.resolve_peaks_and_regions (k_sep_pk, smoo)
             #    define_multiplets_regions:
             ##      em define_multiplets_regions: define is_reg com base em bons picos
             # 2022-out-5: Definindo multipletos no original spec (não no smoo)

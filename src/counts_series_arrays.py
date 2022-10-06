@@ -24,7 +24,7 @@ class CountsSeriesArrays:
         self.is_reg = np.zeros(self.n_ch, dtype=bool)
 
         self.net_spec = np.zeros(self.n_ch)
-        self.final_baseline = np.zeros(self.n_ch)
+        # self.final_baseline = np.zeros(self.n_ch)
         self.xs_all_mplets = []
         self.ys_all_mplets = []
         self.ys_all_steps = []
@@ -90,7 +90,7 @@ class CountsSeriesArrays:
             #    self.ys_all_steps.extend(list(a_step))
             #    self.ys_all_steps.append( None )
             self.net_spec[slice(*multiplet_region)] = np.where(net_mplet < 0.0, 0.0, net_mplet)
-            self.final_baseline = self.y0s - self.net_spec
+        self.final_baseline = self.y0s - self.net_spec
 
 
     def chans_in_regs(self):

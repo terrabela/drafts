@@ -176,16 +176,16 @@ class BaselineGraphic(SpecGraphics):
 
         self.figbl.add_trace(
             go.Scattergl(x=spec_an.cnt_arrs.x_s,
-                         y=spec_an.cnt_arrs.final_baseline,
-                         name='final_baseline',
-                         line=dict(color='gray', width=0.3)));
+                         y=spec_an.cnt_arrs.eval_baseline,
+                         name='eval_baseline',
+                         line=dict(color='blue', width=0.5)));
 
         # PAREI AQUI
-        self.figbl.add_trace(
-            go.Scattergl(x=spec_an.cnt_arrs.plotsteps_x,
-                         y=spec_an.cnt_arrs.plotsteps_y,
-                         name='calculated_step_counts',
-                         line=dict(color='red', width=1.3)));
+        # self.figbl.add_trace(
+        #     go.Scattergl(x=spec_an.cnt_arrs.plotsteps_x,
+        #                  y=spec_an.cnt_arrs.plotsteps_y,
+        #                  name='calculated_step_counts',
+        #                  line=dict(color='red', width=1.3)));
 
         # Set title and scale type
         self.figbl.update_layout(title_text='Baseline: ' + self.f_name)

@@ -81,13 +81,15 @@ if __name__ == '__main__':
     # smoothed_graph.plot_figw1(a_spec.smoo_gross_ser_an, 'cont_bruta_suavi')
 
     a_spec.total_analysis()
-    print('Fez total analysis')
+    print('Fez total analysis.')
+    print('Objeto a_spec.gross_spec_ser_an.cnt_arrs:')
+    print(vars(a_spec.gross_spec_ser_an.cnt_arrs))
 
-    pks_regions_gros = PeaksAndRegionsGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
-    pks_regions_gros.plot_figw2(a_spec.gross_spec_ser_an, 'origi_bruta_larguras')
+    # pks_regions_gros = PeaksAndRegionsGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
+    # pks_regions_gros.plot_figw2(a_spec.gross_spec_ser_an, 'origi_bruta_larguras')
 
-    pks_regions_smoo = PeaksAndRegionsGraphic(complete_spec_name, a_spec.smoo_gross_ser_an)
-    pks_regions_smoo.plot_figw2(a_spec.smoo_gross_ser_an, 'suavi_bruta_larguras')
+    # pks_regions_smoo = PeaksAndRegionsGraphic(complete_spec_name, a_spec.smoo_gross_ser_an)
+    # pks_regions_smoo.plot_figw2(a_spec.smoo_gross_ser_an, 'suavi_bruta_larguras')
 
     baseline_graph = BaselineGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
     baseline_graph.plot_figbl(a_spec.gross_spec_ser_an, 'Linha_base_espectro_original')
