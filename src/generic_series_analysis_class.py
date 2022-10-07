@@ -8,19 +8,16 @@ class GenericSeriesAnalysis:
 
     def __init__(self, cnt_arrs):
         self.cnt_arrs = cnt_arrs
-        self.ys = cnt_arrs.new_y_s
+        self.ys = cnt_arrs.y_s
         self.n_ch = self.ys.size
         self.pk_parms = PeaksParms()
-        self.is_reg = np.zeros(self.n_ch)
-        self.baseline = np.array([])
 
     def resolve_peaks_and_regions(self, k_sep_pk, smoo):
         self.peaks_search()
         print('resolve_peaks_and_regions:')
-        print(vars(self.pk_parms))
         self.redefine_widths_range()
         self.peaks_search(widths_range=self.widths_pair)
-        self.define_multiplets_regions(k_sep_pk)
+        self.define_multiplets_regions(k_sep_pk, smoo)
         self.baseline = self.cnt_arrs.calculate_base_line(
             mix_regions=self.pk_parms.mix_regions, smoo=smoo)
 
@@ -49,7 +46,7 @@ class GenericSeriesAnalysis:
         self.widths_pair = (ws_min, ws_max)
 
 
-    def define_multiplets_regions(self, k_sep_pk):
+    def define_multiplets_regions(self, k_sep_pk, smoo):
         """Define multiplet regions from already found peaks with proper widths."""
         # k_sep_pk: Fator de fwhm para ampliar multipletos:
         # 2021-06-28
@@ -62,11 +59,11 @@ class GenericSeriesAnalysis:
             for i_pk, ch_pk in enumerate(self.pk_parms.peaks):
                 for i_ch in range(ini_extd[i_pk], fin_extd[i_pk] + 1):
                     if (i_ch >= 0) & (i_ch < self.n_ch):
-                        self.is_reg[i_ch] = True
+                        self.cnt_arrs.is_reg[i_ch] = True
 
         comuta = np.zeros(self.n_ch)
         for i in range(1, self.n_ch):
-            comuta[i] = self.is_reg[i].astype(int) - self.is_reg[i - 1].astype(int)
+            comuta[i] = self.cnt_arrs.is_reg[i].astype(int) - self.cnt_arrs.is_reg[i - 1].astype(int)
 
         # np.nonzero gera uma tupla, não sei por quê.
         inis = np.nonzero(comuta > 0)[0]
@@ -79,5 +76,6 @@ class GenericSeriesAnalysis:
         fins = fins[:min_size]
         self.mix_regions = np.concatenate(np.array([[inis], [fins]])).T
 
-        print('define_multiplets_regions completado. Define:')
-        print('self.mix_regions: ', self.mix_regions)
+        self.cnt_arrs.calculate_base_line(self.mix_regions, smoo)
+
+        print('define_multiplets_regions completado. Define: self.mix_regions.')

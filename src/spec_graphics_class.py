@@ -14,13 +14,16 @@ class SpecGraphics():
     def __init__(self, f_name, spec_an):
         pass
 
+
 class GrossCountsGraphic(SpecGraphics):
     def __init__(self, f_name, spec_an):
         super().__init__(f_name, spec_an)
         self.f_name = f_name
         self.chans_nzero = spec_an.cnt_arrs.chans_nzero
         self.counts_nzero = spec_an.cnt_arrs.counts_nzero
-        self.unc_y_4plot = spec_an.cnt_arrs.unc_y_4plot
+        self.unc_y_4plot = np.where(spec_an.cnt_arrs.unc_y < 1.4,
+                                    0.0,
+                                    spec_an.cnt_arrs.unc_y)
         # Initialize figure
         self.figw1 = go.FigureWidget();
 
@@ -53,7 +56,9 @@ class PeaksAndRegionsGraphic(SpecGraphics):
         self.f_name = f_name
         self.chans_nzero = spec_an.cnt_arrs.chans_nzero
         self.counts_nzero = spec_an.cnt_arrs.counts_nzero
-        self.unc_y_4plot = spec_an.cnt_arrs.unc_y_4plot
+        self.unc_y_4plot = np.where(spec_an.cnt_arrs.unc_y < 1.4,
+                                    0.0,
+                                    spec_an.cnt_arrs.unc_y)
         self.x_s = spec_an.cnt_arrs.x_s
 
         # Initialize figure
@@ -70,7 +75,6 @@ class PeaksAndRegionsGraphic(SpecGraphics):
         self.ys_fwhm_lines = np.array([])
         self.xs_fwb_lines = np.array([])
         self.ys_fwb_lines = np.array([])
-
 
     def define_width_lines(self):
         """Build width peaks related lines, just for plotting."""
@@ -90,7 +94,6 @@ class PeaksAndRegionsGraphic(SpecGraphics):
             self.ys_fwb_lines = np.concatenate(np.stack(
                 (self.plateaux, self.plateaux, np.full(n_pk, None)), axis=1))
 
-
     def net_width_lines_deletar(self):
         """Build width peaks related lines, just for plotting."""
         n_pk = self.peaks_net.size
@@ -102,8 +105,6 @@ class PeaksAndRegionsGraphic(SpecGraphics):
                 (self.propts_net['width_heights'],
                  self.propts_net['width_heights'],
                  np.full(n_pk, None)), axis=1))
-
-
 
     def plot_figw2(self, spec_an, graph_name):
         self.define_width_lines()
@@ -129,22 +130,22 @@ class PeaksAndRegionsGraphic(SpecGraphics):
                          name='FW at base',
                          line=dict(color='magenta', width=3.0)));
 
-
         self.fig_widths.add_trace(
             go.Scattergl(x=self.pk_parms.peaks,
                          y=self.pk_parms.propts['peak_heights'],
-                         name = 'peak_heights',
-                         marker = dict(color='yellow',
-                                       symbol='circle',
-                                       size=10,
-                                       opacity=0.8,
-                                       line=dict(color='green', width=2.0)
-                                       ),
-                         mode = 'markers'));
+                         name='peak_heights',
+                         marker=dict(color='yellow',
+                                     symbol='circle',
+                                     size=10,
+                                     opacity=0.8,
+                                     line=dict(color='green', width=2.0)
+                                     ),
+                         mode='markers'));
         # Set title and scale type
         self.fig_widths.update_layout(title_text="Fig 2: Peaks widths")
         self.fig_widths.update_yaxes(type='log');
         self.fig_widths.write_html(graph_name + '.html', auto_open=True)
+
 
 class BaselineGraphic(SpecGraphics):
     def __init__(self, f_name, spec_an):
@@ -152,7 +153,9 @@ class BaselineGraphic(SpecGraphics):
         self.f_name = f_name
         self.chans_nzero = spec_an.cnt_arrs.chans_nzero
         self.counts_nzero = spec_an.cnt_arrs.counts_nzero
-        self.unc_y_4plot = spec_an.cnt_arrs.unc_y_4plot
+        self.unc_y_4plot = np.where(spec_an.cnt_arrs.unc_y < 1.4,
+                                    0.0,
+                                    spec_an.cnt_arrs.unc_y)
         # Initialize figure
         self.figbl = go.FigureWidget();
 
@@ -170,7 +173,7 @@ class BaselineGraphic(SpecGraphics):
                          line=dict(color='orange', width=0.7)));
         self.figbl.add_trace(
             go.Scattergl(x=spec_an.cnt_arrs.x_s,
-                         y=spec_an.cnt_arrs.new_y_s,
+                         y=spec_an.cnt_arrs.y_s,
                          name='y_s, eventually smoothed',
                          line=dict(color='navy', width=0.4)))
 
@@ -180,17 +183,43 @@ class BaselineGraphic(SpecGraphics):
                          name='eval_baseline',
                          line=dict(color='blue', width=0.5)));
 
-        # PAREI AQUI
-        # self.figbl.add_trace(
-        #     go.Scattergl(x=spec_an.cnt_arrs.plotsteps_x,
-        #                  y=spec_an.cnt_arrs.plotsteps_y,
-        #                  name='calculated_step_counts',
-        #                  line=dict(color='red', width=1.3)));
+        self.figbl.add_trace(
+            go.Scattergl(x=spec_an.cnt_arrs.x_s,
+                         y=spec_an.cnt_arrs.final_baseline,
+                         name='final_baseline',
+                         line=dict(color='red', width=0.6)));
+
+        #        self.figbl.add_trace(
+        #            go.Scattergl(x=spec_an.cnt_arrs.plotsteps_x,
+        #                         y=spec_an.cnt_arrs.plotsteps_y,
+        #                         name='calculated_step_counts',
+        #                         line=dict(color='red', width=1.3)));
 
         # Set title and scale type
         self.figbl.update_layout(title_text='Baseline: ' + self.f_name)
         self.figbl.update_yaxes(type="log")
         self.figbl.write_html(graph_name + '.html', auto_open=True)
+
+
+class NetSpecGraphic(SpecGraphics):
+
+    def __init__(self, f_name, spec_an):
+        super().__init__(f_name, spec_an)
+        self.f_name = f_name
+        # Initialize figure
+        self.figns = go.FigureWidget();
+
+    def plot_figns(self, spec_an, graph_name):
+        # self.united_step_baselines()
+        self.figns.add_trace(
+            go.Scattergl(x=spec_an.cnt_arrs.x_s,
+                         y=spec_an.cnt_arrs.net_spec,
+                         name='net_spec',
+                         line=dict(color='red', width=0.6)));
+        # Set title and scale type
+        # self.figns.update_layout(title_text='Net spec: ' + self.f_name)
+        # self.figbl.update_yaxes(type="log")
+        self.figns.write_html(graph_name + '.html', auto_open=True)
 
     def united_step_baselines(self):
         """Build concatenated arrays of step baselines, just for plotting."""
@@ -229,4 +258,3 @@ class BaselineGraphic(SpecGraphics):
         self.fig_is_reg.update_layout(title_text="Fig 3: Definition of regions")
         self.fig_is_reg.update_yaxes(type='log');
         self.fig_is_reg.write_html('fig_is_reg.html', auto_open=True)
-

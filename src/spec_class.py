@@ -8,8 +8,8 @@ Created on Wed Jun  2 16:06:14 2021
 # https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#compile
 
 from pathlib import Path
-
 import numpy as np
+import pandas as pd
 
 from src.genericcalib_class import ChannelEnergyCalib, EnergyFwhmCalib, EnergyEfficiencyCalib
 from src.specchn_class import SpecChn
@@ -43,6 +43,7 @@ class Spec:
         #
         self.pkl_file = Path(self.f_name).with_suffix('.xz')
 
+        self.bd_pd =
         n_ch = self.spec_io.n_ch
 
         self.gross_spec_ser_an = GenericSeriesAnalysis(
@@ -54,6 +55,10 @@ class Spec:
         # self.smoo_gross_ser_an = GenericSeriesAnalysis(
         #     CountsSeriesArrays(self.spec_io.sp_counts, to_smooth=True)
         # )
+        # 2022-out-6 Criando a espectro líquido:
+        self.net_spec_ser_an = GenericSeriesAnalysis(
+            CountsSeriesArrays(self.spec_io.sp_counts, to_smooth=False)
+        )
         #
         #        self.channel_energy_calib = ChannelEnergyCalib(self.spec_io.en_ch_calib,
         #                                                       self.spec_io.chan_calib,
@@ -114,13 +119,15 @@ class Spec:
             #    define_multiplets_regions:
             ##      em define_multiplets_regions: define is_reg com base em bons picos
             # 2022-out-5: Definindo multipletos no original spec (não no smoo)
-            self.gross_spec_ser_an.define_multiplets_regions(k_sep_pk)
-
-            #    em define_multiplets_limits: define mix_regions (lims reg)
-            #    calculate_base_line
-            #    calculate_net_spec
+            self.gross_spec_ser_an.define_multiplets_regions(k_sep_pk, smoo)
 
             # 2022-set-27 Aqui começam os cálculos em cima do espectro líquido
+            self.net_spec_ser_an = GenericSeriesAnalysis(
+                CountsSeriesArrays(self.gross_spec_ser_an.cnt_arrs.net_spec, to_smooth=False)
+            )
+            self.net_spec_ser_an.resolve_peaks_and_regions(k_sep_pk, smoo)
+            self.net_spec_ser_an.define_multiplets_regions(k_sep_pk, smoo)
+
             print('=================')
             # print('Exec peaks_search(gross=False)')
             # self.peaks_parms.peaks_search(cts_to_search=self.cnt_array_like.net_spec, gross=False,

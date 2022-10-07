@@ -7,7 +7,8 @@ from pathlib import Path
 import pickle
 import os
 from src.spec_class import Spec
-from src.spec_graphics_class import GrossCountsGraphic, PeaksAndRegionsGraphic, BaselineGraphic
+from src.spec_graphics_class import GrossCountsGraphic, PeaksAndRegionsGraphic,\
+    BaselineGraphic, NetSpecGraphic
 
 
 class Ograyspy:
@@ -82,8 +83,9 @@ if __name__ == '__main__':
 
     a_spec.total_analysis()
     print('Fez total analysis.')
-    print('Objeto a_spec.gross_spec_ser_an.cnt_arrs:')
-    print(vars(a_spec.gross_spec_ser_an.cnt_arrs))
+
+    print('Objeto a_spec.net_spec_ser_an.pk_parms:')
+    print(vars(a_spec.net_spec_ser_an.pk_parms))
 
     # pks_regions_gros = PeaksAndRegionsGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
     # pks_regions_gros.plot_figw2(a_spec.gross_spec_ser_an, 'origi_bruta_larguras')
@@ -91,8 +93,18 @@ if __name__ == '__main__':
     # pks_regions_smoo = PeaksAndRegionsGraphic(complete_spec_name, a_spec.smoo_gross_ser_an)
     # pks_regions_smoo.plot_figw2(a_spec.smoo_gross_ser_an, 'suavi_bruta_larguras')
 
-    baseline_graph = BaselineGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
-    baseline_graph.plot_figbl(a_spec.gross_spec_ser_an, 'Linha_base_espectro_original')
+    # baseline_graph = BaselineGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
+    # baseline_graph.plot_figbl(a_spec.gross_spec_ser_an, 'Linha_base_espectro_original')
+    # netspec_graph = NetSpecGraphic(a_spec.gross_spec_ser_an, 'Net spec')
+    # netspec_graph.plot_figns(a_spec.gross_spec_ser_an, 'Net spec')
+    # pks_regions_net = PeaksAndRegionsGraphic(complete_spec_name, a_spec.net_spec_ser_an)
+    # pks_regions_net.plot_figw2(a_spec.net_spec_ser_an, 'Net peaks, finally.')
+
+    # E finalmente soma as contagens líquidas de 4 FWHMs:
+    a_spec.net_spec_ser_an.pk_parms.regions_to_sum()
+    a_spec.net_spec_ser_an.cnt_arrs.final_sums(
+        a_spec.net_spec_ser_an.pk_parms
+    )
 
     # a_graph.plot_graphics()
     # End of main program.
