@@ -9,7 +9,7 @@ Created on Wed Jun  2 16:06:14 2021
 
 from pathlib import Path
 import numpy as np
-import pandas as pd
+# import pandas as pd
 
 from src.genericcalib_class import ChannelEnergyCalib, EnergyFwhmCalib, EnergyEfficiencyCalib
 from src.specchn_class import SpecChn
@@ -43,8 +43,10 @@ class Spec:
         #
         self.pkl_file = Path(self.f_name).with_suffix('.xz')
 
-        self.bd_pd =
-        n_ch = self.spec_io.n_ch
+        # 2022-out-7:
+        # Parei aqui: fazer bd do Pandas
+        # self.bd_pd =
+        # n_ch = self.spec_io.n_ch
 
         self.gross_spec_ser_an = GenericSeriesAnalysis(
             CountsSeriesArrays(self.spec_io.sp_counts, to_smooth=False)
@@ -73,12 +75,12 @@ class Spec:
 
         #        self.channel_energy_calib = ChannelEnergyCalib()
         #        self.energy_fwhm_calib = EnergyFwhmCalib()
-        try:  # 2022-Jun-23
-            self.spec_io.en_ef_calib
-        except AttributeError:
-            pass
-        else:
-            self.energy_efficiency_calib = EnergyEfficiencyCalib(self.spec_io.en_ef_calib)
+#         try:  # 2022-Jun-23
+#             self.spec_io.en_ef_calib
+#         except AttributeError:
+#             pass
+#         else:
+#             self.energy_efficiency_calib = EnergyEfficiencyCalib(self.spec_io.en_ef_calib)
 
         # print(vars(self))
         print(vars(self.gross_spec_ser_an.cnt_arrs))

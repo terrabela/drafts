@@ -60,23 +60,32 @@ if __name__ == '__main__':
     print('No. spec files: ', my_ogra.n_files)
 
     # given_spec_name = "Filtros/2022/Cci/CCI1603-I.Chn"
-    given_spec_name = "Si/SI2018/SI11318.Chn"
+
+    # 2022-out-7: Excelente espectro para testes, tenho usado ultimamente:
+    # given_spec_name = "Si/SI2018/SI11318.Chn"
+
     # given_spec_name = "Eso_non_existe.Chn"
-    if given_spec_name in my_ogra.files_list:
-        print("Found!")
-        complete_spec_name = str(my_ogra.spectra_path) + '/' + given_spec_name
-    else:
-        print("Not found... :-( ")
-        my_ogra.choose_random_spectrum()
-        print('Random spec index: ', my_ogra.a_spec_ind)
-        a_spec_name: str = my_ogra.files_list[my_ogra.a_spec_ind]
-        print('...and its name: ', a_spec_name)
-        complete_spec_name = str(my_ogra.spectra_path) + '/' + a_spec_name
+
+    # if given_spec_name in my_ogra.files_list:
+    #     print("Found!")
+    #     complete_spec_name = str(my_ogra.spectra_path) + '/' + given_spec_name
+    # else:
+    #     print("Not found... :-( ")
+    #     my_ogra.choose_random_spectrum()
+    #     print('Random spec index: ', my_ogra.a_spec_ind)
+    #     a_spec_name: str = my_ogra.files_list[my_ogra.a_spec_ind]
+    #     print('...and its name: ', a_spec_name)
+    #     complete_spec_name = str(my_ogra.spectra_path) + '/' + a_spec_name
+
+    complete_spec_name = str(my_ogra.spectra_path) + '/' + 'almera22/IAEA-TERC-2022-01-02/TERC22-Filter.IEC'
+    # complete_spec_name = str(my_ogra.spectra_path) + '/' + 'almera22/IAEA-TERC-2022-01-02/ERAPNI2011.IEC'
+
+
     print(complete_spec_name)
     a_spec = Spec(complete_spec_name)
 
-    # gross_counts_graphics = GrossCountsGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
-    # gross_counts_graphics.plot_figw1(a_spec.gross_spec_ser_an, 'cont_bruta_origi')
+    gross_counts_graphics = GrossCountsGraphic(complete_spec_name, a_spec.gross_spec_ser_an)
+    gross_counts_graphics.plot_figw1(a_spec.gross_spec_ser_an, 'cont_bruta_origi')
 
     # smoothed_graph = GrossCountsGraphic(complete_spec_name, a_spec.smoo_gross_ser_an)
     # smoothed_graph.plot_figw1(a_spec.smoo_gross_ser_an, 'cont_bruta_suavi')

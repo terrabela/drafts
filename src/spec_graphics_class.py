@@ -40,7 +40,7 @@ class GrossCountsGraphic(SpecGraphics):
                          line=dict(color='orange', width=0.7)));
         self.figw1.add_trace(
             go.Scattergl(x=spec_an.cnt_arrs.x_s,
-                         y=spec_an.cnt_arrs.new_y_s,
+                         y=spec_an.cnt_arrs.y_s,
                          name='y_s, eventually smoothed',
                          line=dict(color='navy', width=0.4)))
 
