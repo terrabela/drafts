@@ -9,12 +9,11 @@ Created on Wed Jun  2 16:06:14 2021
 
 from pathlib import Path
 import numpy as np
-# import pandas as pd
+import pandas as pd
 
 from src.genericcalib_class import ChannelEnergyCalib, EnergyFwhmCalib, EnergyEfficiencyCalib
 from src.specchn_class import SpecChn
 from src.speciec_class import SpecIec
-# from src.cntarraylike_class import CntArrayLike
 from src.counts_series_arrays import CountsSeriesArrays
 from src.generic_series_analysis_class import GenericSeriesAnalysis
 
@@ -45,8 +44,7 @@ class Spec:
 
         # 2022-out-7:
         # Parei aqui: fazer bd do Pandas
-        # self.bd_pd =
-        # n_ch = self.spec_io.n_ch
+        self.spec_pks_df = pd.DataFrame()
 
         self.gross_spec_ser_an = GenericSeriesAnalysis(
             CountsSeriesArrays(self.spec_io.sp_counts, to_smooth=False)
@@ -82,6 +80,7 @@ class Spec:
 #         else:
 #             self.energy_efficiency_calib = EnergyEfficiencyCalib(self.spec_io.en_ef_calib)
 
+        self.spec_io = None
         # print(vars(self))
         print(vars(self.gross_spec_ser_an.cnt_arrs))
 
@@ -129,6 +128,8 @@ class Spec:
             )
             self.net_spec_ser_an.resolve_peaks_and_regions(k_sep_pk, smoo)
             self.net_spec_ser_an.define_multiplets_regions(k_sep_pk, smoo)
+
+            self.spec_pks_df
 
             print('=================')
             # print('Exec peaks_search(gross=False)')
